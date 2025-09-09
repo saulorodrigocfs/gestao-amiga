@@ -1,1 +1,1 @@
-# gestao-amiga
+Projeto de um sistema de gestão simple e eficaz para pequenos comerciantes.
