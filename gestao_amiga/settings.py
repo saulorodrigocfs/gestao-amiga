@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gestao', #nossa nova app
+    'accounts', #app para usuários
 ]
 
 MIDDLEWARE = [
