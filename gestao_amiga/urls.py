@@ -20,7 +20,7 @@ from . import views as profect_views #criação de uma view home simples
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts", include("accounts.urls"))
+    path("accounts", include("accounts.urls")),
     path("", project_views.home, name="home") #rota do home
 ]
 
