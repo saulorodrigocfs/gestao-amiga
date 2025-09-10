@@ -28,3 +28,8 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+@login_required
+def painel(request):
+    #aqui é onde filtra dados do usuário logado
+    return render(request, "accounts/painel.html", {"user": request.user})
