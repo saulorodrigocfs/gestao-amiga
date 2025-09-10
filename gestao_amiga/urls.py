@@ -16,11 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from . import views as profect_views #criação de uma view home simples
+from gestao_amiga import views as project_views #criação de uma view home simples
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts", include("accounts.urls")),
-    path("", project_views.home, name="home") #rota do home
+    path("accounts/", include("accounts.urls")),
+    path("", project_views.home, name="home"), #rota do home
 ]
 
