@@ -41,4 +41,13 @@ class Venda(models.Model):
 
     def __str__(self):
         return f"{self.produto.nome} - {self.quantidade}"
+
+class Loja(models.Model):
+    nome = models.CharField(max_length=100)
+    endereco = models.CharField(max_length=200, blank=True)
+    dono = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lojas')
+    criada_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome
     

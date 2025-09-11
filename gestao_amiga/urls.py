@@ -22,6 +22,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
+    path("", include("gestao.urls")),
     path("", project_views.home, name="home"), #rota do home
     #Tela para digitar o email e solicitar o reset da senha
     path("senha/reset/", auth_views.PasswordResetView.as_view(
@@ -39,4 +40,5 @@ urlpatterns = [
     path("senha/reset/complete/", auth_views.PasswordResetCompleteView.as_view(
         template_name="recuperar_senha/recuperar_senha_complete.html"),
         name="password_reset_complete"),
+
 ]

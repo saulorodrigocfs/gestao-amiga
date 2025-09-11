@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Painel de Lojas</h2>
+
+<h3>Minhas Lojas</h3>
+<u1>
+    {% for loja in lojas %}
+    <li>
+        <a href="{% url 'painel_loja' %}">Acessar</a>
+    </li>
+    {% empty %}
+    <li>Nenhuma loja cadastrada.</li>
+    {% endfor %}
+</u1>
+
+<h3>Cadastrar Nova Loja</h3>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Cadastrar Loja</button> 
+</form>
+{% endblock %}
