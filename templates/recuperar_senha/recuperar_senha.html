@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Recuperar Senha</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.email.label_tag }}
+    {{ form.email }}
+    <button type="submit">Enviar link de recuperação</button>
+</form>
+{% endblock %}

@@ -17,10 +17,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from gestao_amiga import views as project_views #criação de uma view home simples
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("", project_views.home, name="home"), #rota do home
+    #Tela para digitar o email e solicitar o reset da senha
+    path("senha/reset/", auth_views.PasswordResetView.as_view(
+        template_name="recuperar_senha/recuperar_senha.html"),
+        name="password_reset"),
+    #Tela que confirma que o email foi enviado
+    path("senha/reset/done/", auth_views.PasswordResetDoneView.as_view(
+        template_name="recuperar_senha/recuperar_senha_done.html"),
+        name="password_reset_done"),
+    #Tela para definir senha via link do email
+    path("senha/reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(
+        template_name="recuperar_senha/resetar_senha.html"),
+        name="password_reset_confirm"),
+    #Tela de sucesso após redefinição
+    path("senha/reset/complete/", auth_views.PasswordResetCompleteView.as_view(
+        template_name="recuperar_senha/recuperar_senha_complete.html"),
+        name="password_reset_complete"),
 ]
-

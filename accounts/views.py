@@ -33,3 +33,4 @@ def logout_view(request):
 def painel(request):
     #aqui é onde filtra dados do usuário logado
     return render(request, "accounts/painel.html", {"user": request.user})
+
