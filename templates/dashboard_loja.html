@@ -3,5 +3,44 @@
 <h2>Dashboard de {{ loja.nome }}</h2>
 <p>Bem-vindo ao painel da sua loja, {{ loja.nome }}!</p>
 
+<div class="dashboard-sections">
+    <!--Resumo financeiro-->
+    <div class="section resumo-financeiro">
+        <h3>Resumo financeiro</h3>
+        <p>Saldo atual: R$ 0,00</p>
+        <p>Total de receitas: R$ 0,00</p>
+        <p>Total de despesas: R$ 0,00</p>
+    </div>
+
+    <!--Últimas vendas-->
+    <div class="section ultimas-vendas">
+        <h3>Últimas Vendas</h3>
+        <ul>
+            <li>Venda 1 — R$ 0,00</li>
+            <li>Venda 2 — R$ 0,00</li>
+            <li>Venda 3 — R$ 0,00</li>
+        </ul>
+    </div>
+        
+    <!--Despesas recentes-->
+    <div class="section despesas-recentes">
+        <h3>Despesas Recentes</h3>
+        <ul>
+            <li>Despesa 1 — R$ 0,00</li>
+            <li>Despesa 2 — R$ 0,00</li>
+        </ul>
+    </div>
+
+    <!--Atalhos para cadastros-->
+    <div class="section atalhos-cadastros">
+        <h3>Atalhos</h3>
+        <a href="{% url 'cadastro_produto' loja.id %}" class="btn">Cadastrar Produto</a>
+        <a href="{% url 'cadastro_cliente' loja.id %}" class="btn">Cadastrar Cliente</a>
+        <a href="{% url 'cadastro_fornecedor' loja.id %}" class="btn">Cadastrar Fornecedor</a>
+        <a href="{% url 'cadastro_venda' loja.id %}" class="btn destaque">Cadastrar Venda</a>
+    </div>
+</div>
+
+
 <a href="{% url 'painel_loja' %}">Voltar para Painel de Lojas</a>
 {% endblock %}

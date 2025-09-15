@@ -27,3 +27,19 @@ def dashboard_loja(request, loja_id):
     except Loja.DoesNotExist:
         return redirect('painel_loja')
     return render(request, 'dashboard_loja.html', {'loja': loja})
+
+@login_required
+def cadastro_produto(request, loja_id):
+    return render(request, 'financeiro/cadastro_produto.html', {'loja_id': loja_id})
+
+@login_required
+def cadastro_cliente(request, loja_id):
+    return render(request, 'financeiro/cadastro_cliente.html', {'loja_id': loja_id})
+
+@login_required
+def cadastro_fornecedor(request, loja_id):
+    return render(request, 'financeiro/cadastro_fornecedor.html', {'loja_id': loja_id})
+
+@login_required
+def cadastro_venda(request, loja_id):
+    return render(request, 'financeiro/cadastro_venda.html', {'loja_id': loja_id})
