@@ -3,15 +3,16 @@
 <h2>Painel de Lojas</h2>
 
 <h3>Minhas Lojas</h3>
-<u1>
+<ul>
     {% for loja in lojas %}
     <li>
-        <a href="{% url 'painel_loja' %}">Acessar</a>
+        {{ loja.nome }}
+        <a href="{% url 'dashboard_loja' loja.id %}">Acessar</a>
     </li>
     {% empty %}
-    <li>Nenhuma loja cadastrada.</li>
+    <li><em>Nenhuma loja cadastrada ainda.</em></li>
     {% endfor %}
-</u1>
+</ul>
 
 <h3>Cadastrar Nova Loja</h3>
 <form method="POST">

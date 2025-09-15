@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard de {{ loja.nome }}</h2>
+<p>Bem-vindo ao painel da sua loja, {{ loja.nome }}!</p>
+
+<a href="{% url 'painel_loja' %}">Voltar para Painel de Lojas</a>
+{% endblock %}
