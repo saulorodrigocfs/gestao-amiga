@@ -1,5 +1,5 @@
 from django import forms
-from .models import Loja
+from .models import Loja, Produto
 
 class LojaForm(forms.ModelForm):
     class Meta:
@@ -10,3 +10,7 @@ class LojaForm(forms.ModelForm):
             'endereco': forms.TextInput(attrs={'class': 'form-control'}),
         }
         
+class ProdutoForm(forms.ModelForm):
+    class Meta:
+        model = Produto
+        fields = ['nome', 'preco', 'estoque']

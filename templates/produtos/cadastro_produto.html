@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{% if produto %}Editar{% else %}Cadastrar{% endif %} Produto - {{ loja.nome }}</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p}}
+    <button type="submit">{% if produto %}Atualizar{% else %}Cadastrar{% endif %}</button>
+</form>
+><a href="{% url 'lista_produtos' loja.id %}">Voltar à Lista de Produtos</a>
+{% endblock %}
