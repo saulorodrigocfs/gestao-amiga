@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Loja, Produto
-from .forms import LojaForm, ProdutoForm
+from .models import Loja, Produto, Cliente
+from .forms import LojaForm, ProdutoForm, ClienteForm
 from django.contrib.auth.decorators import login_required
+
 
 @login_required
 def painel_loja(request):
@@ -19,6 +20,7 @@ def painel_loja(request):
         form = LojaForm()
     return render(request, 'painel_loja.html', {'lojas': lojas, 'form': form})
 
+
 @login_required
 def dashboard_loja(request, loja_id):
     user = request.user
@@ -27,6 +29,7 @@ def dashboard_loja(request, loja_id):
     except Loja.DoesNotExist:
         return redirect('painel_loja')
     return render(request, 'dashboard_loja.html', {'loja': loja})
+
 
 @login_required
 def lista_produtos(request, loja_id):
@@ -69,13 +72,43 @@ def deletar_produto(request, loja_id, produto_id):
     produto.delete()
     return redirect('lista_produtos', loja_id=loja.id)
 
+
 @login_required
-def cadastro_cliente(request, loja_id):
-    return render(request, 'financeiro/cadastro_cliente.html', {'loja_id': loja_id})
+def lista_clientes(request, loja_id):
+    clientes = Cliente.objects.filter(usuario=request.user, loja_id=loja_id)
+    return render(request, 'financeiro/lista_clientes.html', {'clientes': clientes, 'loja_id': loja_id} )
+
+@login_required
+def cadastrar_cliente(request, loja_id):
+    form = ClienteForm(request.POST or None)
+    if form.is_valid():
+        cliente = form.save(commit=False)
+        cliente.usuario = request.user
+        cliente.loja_id = loja_id
+        cliente.save()
+        return redirect('lista_clientes', loja_id=loja_id)
+    return render(request, 'financeiro/cadastrar_cliente.html', {'loja_id': loja_id, 'form': form})
+
+@login_required
+def editar_cliente(request, loja_id, pk):
+    cliente = get_object_or_404(Cliente, pk=pk, usuario=request.user, loja_id=loja_id)
+    form = ClienteForm(request.POST or None, instance=cliente)
+    if form.is_valid():
+        form.save()
+        return redirect('lista_clientes', loja_id=loja_id)
+    return render(request, 'financeiro/cadastrar_cliente.html', {'loja_id': loja_id, 'form': form})
+
+@login_required
+def deletar_cliente(request, loja_id, pk):
+    cliente = get_object_or_404(Cliente, pk=pk, usuario=request.user, loja_id=loja_id)
+    cliente.delete()
+    return redirect('lista_clientes', loja_id=loja_id)
+
 
 @login_required
 def cadastro_fornecedor(request, loja_id):
     return render(request, 'financeiro/cadastro_fornecedor.html', {'loja_id': loja_id})
+
 
 @login_required
 def cadastro_venda(request, loja_id):

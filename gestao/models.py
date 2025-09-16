@@ -2,17 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 
-#Cliente que cada usuário vai cadastrar
-class Cliente(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    nome = models.CharField(max_length=100)
-    email = models.EmailField()
-    telefone = models.CharField(max_length=20, blank = True)
-    endereco = models.CharField(max_length=200, blank = True)
-    data_criacao = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.nome
 
 #Perfil estendido usuário
 class PerfilUsuario(models.Model):
@@ -34,6 +24,20 @@ class Produto(models.Model):
     nome = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=8, decimal_places=2)
     estoque = models.IntegerField()
+
+    def __str__(self):
+        return self.nome
+    
+#Cliente que cada usuário vai cadastrar
+class Cliente(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    loja = models.ForeignKey(Loja, on_delete=models.CASCADE, default=1)
+    nome = models.CharField(max_length=100)
+    email = models.EmailField(blank=True, null=True)
+    telefone = models.CharField(max_length=20, blank = True, null=True)
+    endereco = models.TextField(blank = True, null=True)
+    data_cadastro = models.DateTimeField(auto_now_add=True)
+    total_compras = models.IntegerField(default=0)
 
     def __str__(self):
         return self.nome

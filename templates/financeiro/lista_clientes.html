@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Lista de Clientes</h1>
+<a href="{% url 'cadastrar_cliente' loja_id=loja_id %}">Cadastrar Novo Cliente</a>
+<ul>
+    {% for cliente in clientes %}
+        <li>
+            {{ cliente.nome }} - {{ cliente.email }} - {{ cliente.telefone }}
+            <a href="{% url 'editar_cliente' loja_id=loja_id pk=cliente.pk %}">Editar</a>
+            <a href="{% url 'deletar_cliente' loja_id=loja_id pk=cliente.pk %}">Deletar</a>
+        </li>
+    {% empty %}
+        <li>Nenhum Cliente Cadastrado.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

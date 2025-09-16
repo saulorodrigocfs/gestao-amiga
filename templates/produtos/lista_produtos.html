@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Produtos da Loja {{ loja.nome }}</h2>
-<a href="{% url 'cadastro_produto' loja.id %}">Cadastrar Produto</a>
+<a href="{% url 'cadastrar_produto' loja.id %}">Cadastrar Produto</a>
 <table>
     <tr>
         <th>Nome</th>
