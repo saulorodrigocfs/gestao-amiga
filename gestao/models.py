@@ -55,10 +55,16 @@ class Fornecedor(models.Model):
     
 #Venda realizada
 class Venda(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    quantidade = models.IntegerField()
+    loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name="vendas", default=1)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="vendas_produto")
+    quantidade = models.PositiveIntegerField()
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     data = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        self.valor_total = self.quantidade * self.preco_unitario
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.produto.nome} - {self.quantidade}"
+        return f"{self.produto.nome} - {self.quantidade} unidades"

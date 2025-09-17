@@ -1,5 +1,5 @@
 from django import forms
-from .models import Loja, Produto, Cliente, Fornecedor
+from .models import Loja, Produto, Cliente, Fornecedor, Venda
 
 class LojaForm(forms.ModelForm):
     class Meta:
@@ -24,3 +24,12 @@ class FornecedorForm(forms.ModelForm):
     class Meta:
         model = Fornecedor
         fields = ['nome', 'email', 'telefone', 'cnpj', 'endereco']
+
+class VendaForm(forms.ModelForm):
+    class Meta:
+        model = Venda
+        fields = ['produto', 'quantidade', 'preco_unitario']
+        widgets = {
+            'quantidade': forms.NumberInput(attrs={'min': 1}),
+            'preco_unitario': forms.NumberInput(attrs={'step': '0.01'}),
+        }

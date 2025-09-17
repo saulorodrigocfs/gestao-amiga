@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Deletar Venda</h2>
+<p>Tem certea que deseja deletar a venda de {{ venda.produto.nome }} ({{ venda.quantidade }} unidades)?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">SIm, deletar</button>
+    <a href="{% url 'lista_vendas' loja_id %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

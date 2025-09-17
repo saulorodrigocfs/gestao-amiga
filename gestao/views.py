@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Loja, Produto, Cliente, Fornecedor
-from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm
+from .models import Loja, Produto, Cliente, Fornecedor, Venda
+from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm
 from django.contrib.auth.decorators import login_required
 
 
@@ -145,5 +145,49 @@ def deletar_fornecedor(request, loja_id, pk):
 
 
 @login_required
-def cadastro_venda(request, loja_id):
-    return render(request, 'financeiro/cadastro_venda.html', {'loja_id': loja_id})
+def lista_vendas(request, loja_id):
+    vendas = Venda.objects.filter(loja_id=loja_id).select_related('produto')
+    return render(request, 'financeiro/lista_vendas.html', {'vendas': vendas, 'loja_id': loja_id} )
+
+@login_required
+def cadastrar_venda(request, loja_id):
+    if request.method == "POST":
+        form = VendaForm(request.POST)
+        if form.is_valid():
+            venda = form.save(commit=False)
+            venda.loja_id = loja_id
+            venda.produto = form.cleaned_data['produto']
+            venda.preco_unitario = venda.produto.preco
+            venda.save()
+            #atualiza estoque produto
+            produto = venda.produto
+            produto.estoque -= venda.quantidade
+            produto.save()
+            return redirect('lista_vendas', loja_id=loja_id)
+    else:
+        form = VendaForm()
+    return render(request, 'financeiro/cadastrar_venda.html', {'loja_id': loja_id, 'form': form})
+
+@login_required
+def editar_venda(request, loja_id, pk):
+    venda = get_object_or_404(Venda, pk=pk, loja_id=loja_id)
+    if request.method == "POST":
+        form = VendaForm(request.POST, instance=venda)
+        if form.is_valid():
+            venda = form.save(commit=False)
+            venda.loja_id = loja_id
+            venda.save()
+            return redirect('lista_vendas', loja_id=loja_id)
+    else:
+        form = VendaForm(instance=venda)
+    return render(request, 'financeiro/cadastrar_venda.html', {'loja_id': loja_id, 'form': form})
+
+@login_required
+def deletar_venda(request, loja_id, pk):
+    venda = get_object_or_404(Venda, pk=pk, loja_id=loja_id)
+    if request.method == "POST":
+        produto = venda.produto
+        produto.save()
+        venda.delete()
+        return redirect('lista_vendas', loja_id=loja_id)
+    return render(request, 'financeiro/deletar_venda.html', {'venda': venda, 'loja_id': loja_id})

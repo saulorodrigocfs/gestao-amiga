@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Lista de Vendas</h2>
+<a href="{% url 'cadastrar_venda' loja_id %}" class="btn btn-primary">Cadastrar Venda</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produtos</th>
+            <th>Quantidade</th>
+            <th>Preço Unitário</th>
+            <th>Valor Total</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for venda in vendas %}
+        <tr>
+            <td>{{ venda.produto.nome }}</td>
+            <td>{{ venda.quantidade }}</td>
+            <td>{{ venda.preco_unitario }}</td>
+            <td>{{ venda.valor_total }}</td>
+            <td>{{ venda.data }}</td>
+            <td>
+                <a href="{% url 'editar_venda' loja_id venda.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'deletar_venda' loja_id venda.id %}" class="btn btn-danger btn-sm">Deletar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'dashboard_loja' loja_id%}" class="btn btn-secondary">Voltar ao Dashboard</a>
+{% endblock%}
