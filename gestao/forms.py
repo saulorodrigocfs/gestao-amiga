@@ -1,5 +1,5 @@
 from django import forms
-from .models import Loja, Produto, Cliente
+from .models import Loja, Produto, Cliente, Fornecedor
 
 class LojaForm(forms.ModelForm):
     class Meta:
@@ -19,3 +19,8 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ['nome', 'email', 'telefone', 'endereco', 'loja']
+
+class FornecedorForm(forms.ModelForm):
+    class Meta:
+        model = Fornecedor
+        fields = ['nome', 'email', 'telefone', 'cnpj', 'endereco']

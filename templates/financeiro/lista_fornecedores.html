@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Lista de Fornecedores</h2>
+
+<a href="{% url 'cadastrar_fornecedor' loja_id %}" class="btn btn-primary">Cadastrar</a>
+<a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary">Voltar ao Dashboard</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>CNPJ</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fornecedor in fornecedores %}
+        <tr>
+            <td>{{ fornecedor.nome }}</td>
+            <td>{{ fornecedor.email }}</td>
+            <td>{{ fornecedor.telefone }}</td>
+            <td>{{ fornecedor.CNPJ }}</td>
+            <td>
+                <a href="{% url 'editar_fornecedor' loja_id fornecedor.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'deletar_fornecedor' loja_id fornecedor.id %}" class="btn btn-danger btn-sm">Deletar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Nenhum fornecedor cadastrado para esta loja.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'dashboard_loja' loja_id %}">Voltar ao Dashboard</a>
+{% endblock %}

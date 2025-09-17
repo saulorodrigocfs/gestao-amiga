@@ -42,6 +42,17 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nome
     
+class Fornecedor(models.Model):
+    loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name="fornecedores")
+    nome = models.CharField(max_length=100)
+    email = models.EmailField(blank=True, null=True)
+    telefone = models.CharField(max_length=20, blank = True, null=True)
+    cnpj = models.CharField(max_length=200, blank=True, null=True)
+    endereco = models.TextField(blank = True, null=True)
+
+    def __str__(self):
+        return f"{self.nome} ({self.loja.nome})"
+    
 #Venda realizada
 class Venda(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)

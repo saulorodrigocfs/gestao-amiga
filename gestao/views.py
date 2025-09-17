@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Loja, Produto, Cliente
-from .forms import LojaForm, ProdutoForm, ClienteForm
+from .models import Loja, Produto, Cliente, Fornecedor
+from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm
 from django.contrib.auth.decorators import login_required
 
 
@@ -106,8 +106,42 @@ def deletar_cliente(request, loja_id, pk):
 
 
 @login_required
-def cadastro_fornecedor(request, loja_id):
-    return render(request, 'financeiro/cadastro_fornecedor.html', {'loja_id': loja_id})
+def lista_fornecedores(request, loja_id):
+    fornecedores = Fornecedor.objects.filter(loja_id=loja_id)
+    return render(request, 'financeiro/lista_fornecedores.html', {'fornecedores': fornecedores, 'loja_id': loja_id} )
+
+@login_required
+def cadastrar_fornecedor(request, loja_id):
+    if request.method == "POST":
+        form = FornecedorForm(request.POST)
+        if form.is_valid():
+            fornecedor = form.save(commit=False)
+            fornecedor.loja_id = loja_id
+            fornecedor.save()
+            return redirect('lista_fornecedores', loja_id=loja_id)
+    else:
+        form = FornecedorForm()
+    return render(request, 'financeiro/cadastrar_fornecedor.html', {'loja_id': loja_id, 'form': form})
+
+@login_required
+def editar_fornecedor(request, loja_id, pk):
+    fornecedor = get_object_or_404(Fornecedor, pk=pk, loja_id=loja_id)
+    if request.method == "POST":
+        form = FornecedorForm(request.POST, instance=fornecedor)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_fornecedores', loja_id=loja_id)
+    else:
+        form = FornecedorForm(instance=fornecedor)
+    return render(request, 'financeiro/cadastrar_fornecedor.html', {'loja_id': loja_id, 'form': form})
+
+@login_required
+def deletar_fornecedor(request, loja_id, pk):
+    fornecedor = get_object_or_404(Fornecedor, pk=pk, loja_id=loja_id)
+    if request.method == "POST":
+        fornecedor.delete()
+        return redirect('lista_fornecedores', loja_id=loja_id)
+    return render(request, 'financeiro/deletar_fornecedor.html', {'fornecedor': fornecedor, 'loja_id': loja_id})
 
 
 @login_required

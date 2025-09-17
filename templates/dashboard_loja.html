@@ -35,8 +35,8 @@
     <div class="section atalhos-cadastros">
         <h3>Atalhos</h3>
         <a href="{% url 'lista_produtos' loja.id %}" class="btn">Produtos</a>
-        <a href="{% url 'lista_clientes' loja_id=loja_id %}" class="btn">Ver Clientes</a>
-        <a href="{% url 'cadastro_fornecedor' loja.id %}" class="btn">Cadastrar Fornecedor</a>
+        <a href="{% url 'lista_clientes' loja_id=loja.id %}" class="btn">Clientes</a>
+        <a href="{% url 'lista_fornecedores' loja_id=loja.id %}" class="btn">Fornecedores</a>
         <a href="{% url 'cadastro_venda' loja.id %}" class="btn destaque">Cadastrar Venda</a>
     </div>
 </div>
