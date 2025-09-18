@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Deletar Despesa</h2>
+<p>Tem certeza que deseja deletar a despesa {{ despesa.descricao }} no valor de {{ despesa.valor }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Deletar</button>
+    <a href="{% url 'lista_despesas' loja.id %}">Cancelar</a>
+</form>
+{% endblock %}

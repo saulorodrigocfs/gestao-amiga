@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Lista de Despesas</h2>
+
+<a href="{% url 'cadastrar_despesa' loja.id %}">Cadastrar Nova Despesa</a>
+<table>
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for despesa in despesas %}
+        <tr>
+            <td>{{ despesa.descricao }}</td>
+            <td>{{ despesa.categoria }}</td>
+            <td>{{ despesa.valor }}</td>
+            <td>{{ despesa.data }}</td>
+            <td>
+                <a href="{% url 'editar_despesa' loja_id=despesa.loja.id id=despesa.id %}">Editar</a>
+                <a href="{% url 'deletar_despesa' loja_id=despesa.loja.id id=despesa.id %}">Deletar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Nenhuma despesa cadastrada</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'dashboard_loja' loja.id %}">Voltar ao Dashboard</a>
+{% endblock %}

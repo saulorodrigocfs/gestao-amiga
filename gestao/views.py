@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Loja, Produto, Cliente, Fornecedor, Venda
-from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm
+from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa
+from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm
 from django.contrib.auth.decorators import login_required
 
 
@@ -191,3 +191,40 @@ def deletar_venda(request, loja_id, pk):
         venda.delete()
         return redirect('lista_vendas', loja_id=loja_id)
     return render(request, 'financeiro/deletar_venda.html', {'venda': venda, 'loja_id': loja_id})
+
+
+@login_required
+def lista_despesas(request, loja_id):
+    loja = get_object_or_404(Loja, id=loja_id)
+    despesas = Despesa.objects.filter(loja=loja)
+    return render(request, 'financeiro/lista_despesas.html', {'despesas': despesas, 'loja': loja})
+
+@login_required
+def cadastrar_despesa(request, loja_id):
+    loja = get_object_or_404(Loja, id=loja_id)
+    form = DespesaForm(request.POST or None)
+    if form.is_valid():
+        despesa = form.save(commit=False)
+        despesa.loja = loja
+        despesa.save()
+        return redirect('lista_despesas', loja_id=loja.id)
+    return render(request, 'financeiro/cadastrar_despesa.html', {'form': form, 'loja': loja})
+
+@login_required
+def editar_despesa(request, loja_id , id):
+    loja = get_object_or_404(Loja, id=loja_id)
+    despesa = get_object_or_404(Despesa, id=id, loja=loja)
+    form = DespesaForm(request.POST or None, instance=despesa)
+    if form.is_valid():
+        form.save()
+        return redirect('lista_despesas', loja_id=loja.id)
+    return render(request, 'financeiro/cadastrar_despesa.html', {'form': form, 'loja': loja})
+
+@login_required
+def deletar_despesa(request, loja_id, id):
+    loja = get_object_or_404(Loja, id=loja_id)
+    despesa = get_object_or_404(Despesa, id=id, loja=loja)
+    if request.method == "POST":
+        despesa.delete()
+        return redirect('lista_despesas', loja_id=loja.id)
+    return render(request, 'financeiro/deletar_despesa.html', {'despesa': despesa, 'loja': loja})

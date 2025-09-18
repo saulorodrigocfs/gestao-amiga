@@ -1,5 +1,5 @@
 from django import forms
-from .models import Loja, Produto, Cliente, Fornecedor, Venda
+from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa
 
 class LojaForm(forms.ModelForm):
     class Meta:
@@ -32,4 +32,15 @@ class VendaForm(forms.ModelForm):
         widgets = {
             'quantidade': forms.NumberInput(attrs={'min': 1}),
             'preco_unitario': forms.NumberInput(attrs={'step': '0.01'}),
+        }
+
+class DespesaForm(forms.ModelForm):
+    class Meta:
+        model = Despesa
+        fields = ['descricao','valor', 'categoria', 'observacoes']
+        widgets = {
+            'descricao': forms.TextInput(attrs={'placeholder': 'Descrição da despesa'}),
+            'valor': forms.NumberInput(attrs={'step': '0.01'}),
+            'categoria': forms.TextInput(attrs={'categoria': 'Categoria da Despesa'}),
+            'observacoes': forms.Textarea(attrs={'rows': 3, 'placeholders': 'Observações'}),
         }

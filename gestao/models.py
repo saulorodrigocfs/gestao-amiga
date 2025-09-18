@@ -68,3 +68,15 @@ class Venda(models.Model):
 
     def __str__(self):
         return f"{self.produto.nome} - {self.quantidade} unidades"
+
+class Despesa(models.Model):
+    loja = models.ForeignKey(Loja, on_delete=models.CASCADE)
+    descricao = models.CharField(max_length=255)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    data = models.DateField(auto_now_add=True)
+    categoria = models.CharField(max_length=100, blank=True, null=True)
+    observacoes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.descricao} - {self.valor} ({self.loja})"
+    
