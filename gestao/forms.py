@@ -13,7 +13,7 @@ class LojaForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'preco', 'estoque']
+        fields = ['nome', 'preco_compra', 'preco_venda', 'estoque']
 
 class ClienteForm(forms.ModelForm):
     class Meta:

@@ -7,18 +7,20 @@
     <!--Resumo financeiro-->
     <div class="section resumo-financeiro">
         <h3>Resumo financeiro</h3>
-        <p>Saldo atual: R$ 0,00</p>
-        <p>Total de receitas: R$ 0,00</p>
-        <p>Total de despesas: R$ 0,00</p>
+        <p>Saldo atual: R$ {{ saldo_atual | floatformat:2 }}</p>
+        <p>Total de receitas: R$ {{ total_receitas | floatformat:2 }}</p>
+        <p>Total de despesas: R$ {{ total_despesas | floatformat:2 }}</p>
     </div>
 
     <!--Últimas vendas-->
     <div class="section ultimas-vendas">
         <h3>Últimas Vendas</h3>
         <ul>
-            <li>Venda 1 — R$ 0,00</li>
-            <li>Venda 2 — R$ 0,00</li>
-            <li>Venda 3 — R$ 0,00</li>
+            {% for venda in ultimas_vendas %}
+                <li>{{ venda.produto.nome }} - {{ venda.quantidade }} un. - R$ {{ venda.valor_total | floatformat:2 }}</li>
+            {% empty %}
+                <li>Nenhuma venda registrada</li>
+            {% endfor %}
         </ul>
     </div>
         
@@ -26,8 +28,11 @@
     <div class="section despesas-recentes">
         <h3>Despesas Recentes</h3>
         <ul>
-            <li>Despesa 1 — R$ 0,00</li>
-            <li>Despesa 2 — R$ 0,00</li>
+            {% for despesa in despesas_recentes %}
+                <li>{{ despesa.decricao }} - R$ {{ despesa.valor | floatformat:2 }}</li>
+            {% empty %}
+                <li>Nenhuma despesa registrada</li>
+            {% endfor %}
         </ul>
     </div>
 

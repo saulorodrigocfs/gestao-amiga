@@ -22,7 +22,8 @@ class Loja(models.Model):
 class Produto(models.Model):
     loja = models.ForeignKey(Loja, related_name='produtos', on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
-    preco = models.DecimalField(max_digits=8, decimal_places=2)
+    preco_compra = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    preco_venda = models.DecimalField(max_digits=8, decimal_places=2, default=1)
     estoque = models.IntegerField()
 
     def __str__(self):

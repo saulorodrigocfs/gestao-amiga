@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa
 from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
 
 @login_required
@@ -28,7 +29,26 @@ def dashboard_loja(request, loja_id):
         loja = user.lojas.get(id=loja_id)
     except Loja.DoesNotExist:
         return redirect('painel_loja')
-    return render(request, 'dashboard_loja.html', {'loja': loja})
+    #Total de receitas
+    total_receitas = loja.vendas.aggregate(total=Sum('valor_total'))['total'] or 0
+    #Total despesas
+    total_despesas = Despesa.objects.filter(loja=loja).aggregate(total=Sum('valor'))['total'] or 0
+    #Saldo Atual
+    saldo_atual = total_receitas - total_despesas
+    #Últimas vendas (3 mais recentes)
+    ultimas_vendas = loja.vendas.order_by('-data')[:3]
+    #Despesas recentes (3 mais recentes)
+    despesas_recentes = Despesa.objects.filter(loja=loja).order_by('data')[:3]
+
+    contexto = {
+        'loja': loja,
+        'total_receitas': total_receitas,
+        'total_despesas': total_despesas,
+        'saldo_atual': saldo_atual,
+        'ultimas_vendas': ultimas_vendas,
+        'despesas_recentes': despesas_recentes,
+    }
+    return render(request, 'dashboard_loja.html', contexto)
 
 
 @login_required
@@ -156,8 +176,7 @@ def cadastrar_venda(request, loja_id):
         if form.is_valid():
             venda = form.save(commit=False)
             venda.loja_id = loja_id
-            venda.produto = form.cleaned_data['produto']
-            venda.preco_unitario = venda.produto.preco
+            venda.preco_unitario = venda.produto.preco_venda
             venda.save()
             #atualiza estoque produto
             produto = venda.produto
