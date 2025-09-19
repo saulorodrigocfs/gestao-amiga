@@ -190,12 +190,27 @@ def cadastrar_venda(request, loja_id):
 @login_required
 def editar_venda(request, loja_id, pk):
     venda = get_object_or_404(Venda, pk=pk, loja_id=loja_id)
+    produto_antigo = venda.produto
+    quantidade_antiga = venda.quantidade
+
     if request.method == "POST":
         form = VendaForm(request.POST, instance=venda)
         if form.is_valid():
             venda = form.save(commit=False)
             venda.loja_id = loja_id
             venda.save()
+
+            produto_novo = venda.produto 
+            quantidade_nova = venda.quantidade
+            if produto_novo == produto_antigo:
+                delta = quantidade_nova - quantidade_antiga
+                produto_novo.estoque -= delta
+                produto_novo.save()
+            else:
+                produto_antigo.estoque += quantidade_antiga
+                produto_antigo.save()
+                produto_novo.estoque -= quantidade_nova
+                produto_novo.save()
             return redirect('lista_vendas', loja_id=loja_id)
     else:
         form = VendaForm(instance=venda)
@@ -206,6 +221,7 @@ def deletar_venda(request, loja_id, pk):
     venda = get_object_or_404(Venda, pk=pk, loja_id=loja_id)
     if request.method == "POST":
         produto = venda.produto
+        produto.estoque += venda.quantidade
         produto.save()
         venda.delete()
         return redirect('lista_vendas', loja_id=loja_id)
