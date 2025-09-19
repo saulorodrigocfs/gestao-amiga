@@ -247,3 +247,27 @@ def deletar_despesa(request, loja_id, id):
         despesa.delete()
         return redirect('lista_despesas', loja_id=loja.id)
     return render(request, 'financeiro/deletar_despesa.html', {'despesa': despesa, 'loja': loja})
+
+
+@login_required
+def relatorio_lucros(request, loja_id):
+    user = request.user
+    loja = user.lojas.get(id=loja_id)
+    produtos = loja.produtos.all()
+    relatorio = []
+
+    for produto in produtos:
+        vendas_produto = produto.vendas_produto.all()
+        total_quantidade = sum(v.quantidade for v in vendas_produto)
+        total_receita = sum(v.preco_unitario * v.quantidade for v in vendas_produto)
+        total_custo = sum(produto.preco_compra * v.quantidade for v in vendas_produto)
+        lucro = total_receita - total_custo
+
+        relatorio.append({
+            'produto': produto.nome,
+            'quantidade_vendida': total_quantidade,
+            'total_receita': total_receita,
+            'total_custo': total_custo,
+            'lucro': lucro,
+        })
+    return render(request, 'financeiro/relatorio_lucros.html', {'loja': loja, 'relatorio': relatorio})

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content%}
+<h2>Relatório de Lucros</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade Vendida</th>
+            <th>Total Receita</th>
+            <th>Total Custo</th>
+            <th>Lucro</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in relatorio %}
+        <tr>
+            <td>{{ item.produto }}</td>
+            <td>{{ item.quantidade_vendida }}</td>
+            <td>{{ item.total_receita }}</td>
+            <td>{{ item.total_custo }}</td>
+            <td>{{ item.lucro }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'dashboard_loja' loja.id %}" class="btn btn-secondary">Voltar ao Dashboard</a>
+{% endblock %}
