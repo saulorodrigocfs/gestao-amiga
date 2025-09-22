@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa
-from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm
+from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm, FiltroRelatorioForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 
@@ -289,15 +289,38 @@ def deletar_despesa(request, loja_id, id):
     return render(request, 'financeiro/deletar_despesa.html', {'despesa': despesa, 'loja': loja})
 
 
+
 @login_required
 def relatorio_lucros(request, loja_id):
-    user = request.user
-    loja = user.lojas.get(id=loja_id)
+    loja = request.user.lojas.get(id=loja_id)
+    vendas = Venda.objects.filter(loja=loja)
+
+    form = FiltroRelatorioForm(request.GET or None)
+    if form.is_valid():
+        data_inicio = form.cleaned_data.get('data_inicio')
+        data_fim = form.cleaned_data.get('data_fim')
+        cliente = form.cleaned_data.get('cliente')
+        produto = form.cleaned_data.get('produto')
+
+        if data_inicio:
+            vendas = vendas.filter(data__date__gte=data_inicio)
+        if data_fim:
+            vendas = vendas.filter(data__date__lte=data_fim)
+        if cliente:
+            vendas = vendas.filter(cliente=cliente)
+        if produto:
+            vendas = vendas.filter(produto=produto)
+    
     produtos = loja.produtos.all()
     relatorio = []
 
     for produto in produtos:
-        vendas_produto = produto.vendas_produto.all()
+        vendas_produto = vendas.filter(produto=produto)
+        if not vendas_produto.exists():
+            continue
+        cliente = [(v.cliente) for v in vendas_produto]
+        data = [(v.data) for v in vendas_produto]
+
         total_quantidade = sum(v.quantidade for v in vendas_produto)
         total_receita = sum(v.preco_unitario * v.quantidade for v in vendas_produto)
         total_custo = sum(produto.preco_compra * v.quantidade for v in vendas_produto)
@@ -305,9 +328,15 @@ def relatorio_lucros(request, loja_id):
 
         relatorio.append({
             'produto': produto.nome,
+            'data': data,
+            'cliente': cliente,
             'quantidade_vendida': total_quantidade,
             'total_receita': total_receita,
             'total_custo': total_custo,
             'lucro': lucro,
         })
-    return render(request, 'financeiro/relatorio_lucros.html', {'loja': loja, 'relatorio': relatorio})
+    
+    
+    return render(request, 'financeiro/relatorio_lucros.html', {
+        'loja_id': loja_id, 'form': form, 'relatorio': relatorio
+    })

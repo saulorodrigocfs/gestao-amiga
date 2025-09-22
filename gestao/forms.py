@@ -44,3 +44,23 @@ class DespesaForm(forms.ModelForm):
             'categoria': forms.TextInput(attrs={'categoria': 'Categoria da Despesa'}),
             'observacoes': forms.Textarea(attrs={'rows': 3, 'placeholders': 'Observações'}),
         }
+
+class FiltroRelatorioForm(forms.Form):
+    data_inicio = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date'})
+        )
+    data_fim = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    cliente = forms.ModelChoiceField(
+        queryset=Cliente.objects.all(),
+        required=False,
+        empty_label="Todos os clientes"
+    )
+    produto = forms.ModelChoiceField(
+        queryset=Produto.objects.all(),
+        required=False,
+        empty_label="Todos os produtos"
+    )

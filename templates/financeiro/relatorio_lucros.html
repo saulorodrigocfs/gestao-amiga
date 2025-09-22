@@ -2,6 +2,11 @@
 {% block content%}
 <h2>Relatório de Lucros</h2>
 
+<form method="get">
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -21,9 +26,13 @@
             <td>{{ item.total_custo }}</td>
             <td>{{ item.lucro }}</td>
         </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7"><em>Nenhum resultado encontrado.</em></td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<a href="{% url 'dashboard_loja' loja.id %}" class="btn btn-secondary">Voltar ao Dashboard</a>
+<a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary">Voltar ao Dashboard</a>
 {% endblock %}
