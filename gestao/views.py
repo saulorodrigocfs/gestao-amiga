@@ -9,17 +9,41 @@ from django.db.models import Sum
 def painel_loja(request):
     user = request.user
     lojas = user.lojas.all() #lista de lojas do usuário
+    return render(request, 'painel_loja.html', {'lojas': lojas})
 
+@login_required
+def cadastrar_loja(request):
+    user = request.user
     if request.method == "POST":
         form = LojaForm(request.POST)
         if form.is_valid():
             nova_loja = form.save(commit=False)
             nova_loja.dono = user
             nova_loja.save()
-            return redirect('dashboard_loja', pk=nova_loja.pk) #atualiza a página
+            return redirect('painel_loja') #atualiza a página
     else:
         form = LojaForm()
-    return render(request, 'painel_loja.html', {'lojas': lojas, 'form': form})
+    return render(request, 'cadastrar_loja.html', {'form': form})
+
+@login_required
+def editar_loja(request, pk):
+    loja = get_object_or_404(Loja, pk=pk, dono=request.user)
+    if request.method == "POST":
+        form = LojaForm(request.POST, instance=loja)
+        if form.is_valid():
+            form.save()
+            return redirect('painel_loja')
+    else:
+        form = LojaForm(instance=loja)
+        return render(request, 'cadastrar_loja.html', {'form': form, 'loja': loja})
+
+@login_required
+def deletar_loja(request, pk):
+    loja = get_object_or_404(Loja, pk=pk, dono=request.user)
+    if request.method=="POST":
+        loja.delete()
+        return redirect('painel_loja')
+    return render(request, 'deletar_loja.html', {'loja': loja})
 
 
 @login_required

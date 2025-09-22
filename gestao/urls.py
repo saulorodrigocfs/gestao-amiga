@@ -3,6 +3,9 @@ from . import views
 
 urlpatterns = [
     path('painel-loja/', views.painel_loja, name='painel_loja'),
+    path('loja/cadastrar/', views.cadastrar_loja, name='cadastrar_loja'),
+    path('loja/<int:pk>/editar/', views.editar_loja, name='editar_loja'),
+    path('loja/<int:pk>/deletar/', views.deletar_loja, name='deletar_loja'),
     path('loja/<int:loja_id>/dashboard/', views.dashboard_loja, name="dashboard_loja"),
     path('loja/<int:loja_id>/produtos/', views.lista_produtos, name="lista_produtos"),
     path('loja/<int:loja_id>/produto/cadastrar/', views.cadastro_produto, name="cadastro_produto"),

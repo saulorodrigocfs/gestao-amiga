@@ -58,6 +58,7 @@ class Fornecedor(models.Model):
 class Venda(models.Model):
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name="vendas", default=1)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="vendas_produto")
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="vendas_cliente", null = True)
     quantidade = models.PositiveIntegerField()
     preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=1)

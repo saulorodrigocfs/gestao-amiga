@@ -23,7 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("", include("gestao.urls")),
-    path("", project_views.home, name="home"), #rota do home
+    path("", project_views.base, name="base"), #rota do home
     #Tela para digitar o email e solicitar o reset da senha
     path("senha/reset/", auth_views.PasswordResetView.as_view(
         template_name="recuperar_senha/recuperar_senha.html"),

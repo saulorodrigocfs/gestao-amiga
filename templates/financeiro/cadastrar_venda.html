@@ -5,7 +5,7 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Salvar</button>
+    <button type="submit" class="btn btn-success">Registrar Venda</button>
     <a href="{% url 'lista_vendas' loja_id %}" class="btn btn-secondary">Cancelar</a>
 </form>
 

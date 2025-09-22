@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>
+    {% if loja %}Editar Loja: {{ loja.nome }}{% else %}Cadastrar Nova Loja{% endif %}
+</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">
+        {% if loja %}Salvar Alterações{% else %}Cadastrar Loja{% endif %}
+    </button>
+    <a href="{% url 'painel_loja' %}">Cancelar</a>
+</form>
+{% endblock %}

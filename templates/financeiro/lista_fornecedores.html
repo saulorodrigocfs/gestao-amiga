@@ -21,7 +21,7 @@
             <td>{{ fornecedor.nome }}</td>
             <td>{{ fornecedor.email }}</td>
             <td>{{ fornecedor.telefone }}</td>
-            <td>{{ fornecedor.CNPJ }}</td>
+            <td>{{ fornecedor.cnpj }}</td>
             <td>
                 <a href="{% url 'editar_fornecedor' loja_id fornecedor.id %}" class="btn btn-warning btn-sm">Editar</a>
                 <a href="{% url 'deletar_fornecedor' loja_id fornecedor.id %}" class="btn btn-danger btn-sm">Deletar</a>

@@ -8,16 +8,13 @@
     <li>
         {{ loja.nome }}
         <a href="{% url 'dashboard_loja' loja.id %}">Acessar</a>
+        <a href="{% url 'editar_loja' loja.id %}">Editar</a>
+        <a href="{% url 'deletar_loja' loja.id %}">Deletar</a>
     </li>
     {% empty %}
     <li><em>Nenhuma loja cadastrada ainda.</em></li>
     {% endfor %}
 </ul>
 
-<h3>Cadastrar Nova Loja</h3>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Cadastrar Loja</button> 
-</form>
+<a href="{% url 'cadastrar_loja' %}">Cadastrar Nova Loja</a>
 {% endblock %}

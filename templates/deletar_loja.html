@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Deletar Loja</h2>
+<p>Tem certeza que deseja deletar a loja "{{ loja.nome }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sim, deletar</button>
+    <a href="{% url 'painel_loja' %}">Cancelar</a>
+</form>
+{% endblock %}
