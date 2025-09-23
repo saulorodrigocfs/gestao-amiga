@@ -38,5 +38,14 @@
     </tbody>
 </table>
 
+<form method="post" action="{% url 'exportar_relatorio_pdf' loja_id=loja_id %}">
+    {% csrf_token %}
+    <input type="hidden" name="data_inicio" value="{{ request.GET.data_inicio }}">
+    <input type="hidden" name="data_fim" value="{{ request.GET.data_fim }}">
+    <input type="hidden" name="cliente" value="{{ request.GET.cliente }}">
+    <input type="hidden" name="produto" value="{{ request.GET.produto }}">
+    <button type="submit" class="btn btn-success">Exportar PDF</button>
+</form>
+
 <a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary">Voltar ao Dashboard</a>
 {% endblock %}

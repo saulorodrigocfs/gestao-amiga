@@ -1,3 +1,10 @@
+import io
+from datetime import datetime
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4, landscape
+from django.views.decorators.csrf import csrf_exempt
+from urllib.parse import parse_qs
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa
 from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm, FiltroRelatorioForm
@@ -328,3 +335,94 @@ def relatorio_lucros(request, loja_id):
     return render(request, 'financeiro/relatorio_lucros.html', {
         'loja_id': loja_id, 'form': form, 'relatorio': relatorio
     })
+
+
+@login_required
+@csrf_exempt
+def exportar_relatorio_pdf(request, loja_id):
+    loja = request.user.lojas.get(id=loja_id)
+    vendas = Venda.objects.filter(loja=loja)
+
+    # Filtragem
+    data_inicio = request.POST.get('data_inicio')
+    data_fim = request.POST.get('data_fim')
+    cliente_id = request.POST.get('cliente')
+    produto_id = request.POST.get('produto')
+    
+    if data_inicio:
+        data_inicio_obj = datetime.strptime(data_inicio, "%d-%m-%Y").date()
+        vendas = vendas.filter(data_date_gte=data_inicio_obj)
+    if data_fim:
+        data_fim_obj = datetime.strptime(data_fim, "%d-%m-%Y").date()
+        vendas = vendas.filter(data_date_lte=data_fim_obj)
+    if cliente_id:
+        cliente_obj = get_object_or_404(Cliente, id=int(cliente_id))
+        vendas = vendas.filter(cliente=cliente_obj)
+    if produto_id:
+        produto_obj = get_object_or_404(Produto, id=int(produto_id))
+        vendas = vendas.filter(produto=produto_obj)
+
+    # Criando PDF em horizontal
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=landscape(A4))
+    largura, altura = landscape(A4)
+
+    y = altura - 50
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, f"Relatório de Lucros - Loja: {loja.nome}")
+    y -= 30
+
+    # Cabeçalho
+    p.setFont("Helvetica-Bold", 10)
+    colunas = [
+        ("Produto", 50, "left"),
+        ("Data", 200, "left"),
+        ("Cliente", 300, "left"),
+        ("Qtd", 450, "right"),
+        ("Receita", 500, "right"),
+        ("Custo", 570, "right"),
+        ("Lucro", 640, "right")
+    ]
+    for titulo, x, align in colunas:
+        if align == "left":
+            p.drawString(x, y, titulo)
+        else:
+            p.drawRightString(x, y, titulo)
+    y -= 20
+    p.setFont("Helvetica", 10)
+
+    # Conteúdo
+    for venda in vendas:
+        dados = [
+            (venda.produto.nome, 50, "left"),
+            (venda.data.strftime("%d/%m/%Y"), 200, "left"),
+            (str(venda.cliente), 300, "left"),
+            (str(venda.quantidade), 450, "right"),
+            (f"{venda.preco_unitario * venda.quantidade:.2f}", 500, "right"),
+            (f"{venda.produto.preco_compra * venda.quantidade:.2f}", 570, "right"),
+            (f"{(venda.preco_unitario - venda.produto.preco_compra) * venda.quantidade:.2f}", 640, "right")
+        ]
+        for valor, x, align in dados:
+            if align == "left":
+                p.drawString(x, y, valor)
+            else:
+                p.drawRightString(x, y, valor)
+        y -= 20
+
+        # Nova página se necessário
+        if y < 50:
+            p.showPage()
+            y = altura - 50
+            p.setFont("Helvetica-Bold", 10)
+            for titulo, x, align in colunas:
+                if align == "left":
+                    p.drawString(x, y, titulo)
+                else:
+                    p.drawRightString(x, y, titulo)
+            y -= 20
+            p.setFont("Helvetica", 10)
+
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='relatorio_lucros.pdf')
