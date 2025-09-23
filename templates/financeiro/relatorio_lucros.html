@@ -10,6 +10,8 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Data</th>
+            <th>Cliente</th>
             <th>Produto</th>
             <th>Quantidade Vendida</th>
             <th>Total Receita</th>
@@ -20,6 +22,8 @@
     <tbody>
         {% for item in relatorio %}
         <tr>
+            <td>{{ item.data }}</td>
+            <td>{{ item.cliente }}</td>
             <td>{{ item.produto }}</td>
             <td>{{ item.quantidade_vendida }}</td>
             <td>{{ item.total_receita }}</td>

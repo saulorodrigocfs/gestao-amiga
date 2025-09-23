@@ -311,29 +311,17 @@ def relatorio_lucros(request, loja_id):
         if produto:
             vendas = vendas.filter(produto=produto)
     
-    produtos = loja.produtos.all()
     relatorio = []
 
-    for produto in produtos:
-        vendas_produto = vendas.filter(produto=produto)
-        if not vendas_produto.exists():
-            continue
-        cliente = [(v.cliente) for v in vendas_produto]
-        data = [(v.data) for v in vendas_produto]
-
-        total_quantidade = sum(v.quantidade for v in vendas_produto)
-        total_receita = sum(v.preco_unitario * v.quantidade for v in vendas_produto)
-        total_custo = sum(produto.preco_compra * v.quantidade for v in vendas_produto)
-        lucro = total_receita - total_custo
-
+    for venda in vendas:
         relatorio.append({
-            'produto': produto.nome,
-            'data': data,
-            'cliente': cliente,
-            'quantidade_vendida': total_quantidade,
-            'total_receita': total_receita,
-            'total_custo': total_custo,
-            'lucro': lucro,
+            'produto': venda.produto.nome,
+            'data': venda.data,
+            'cliente': venda.cliente,
+            'quantidade_vendida': venda.quantidade,
+            'total_receita': venda.preco_unitario * venda.quantidade,
+            'total_custo': venda.produto.preco_compra * venda.quantidade,
+            'lucro': (venda.preco_unitario - venda.produto.preco_compra) * venda.quantidade,
         })
     
     
