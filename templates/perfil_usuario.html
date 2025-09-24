@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Meu Perfil</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <h4>Dados do Usuário</h4>
+    {{ user_form.as_p }}
+
+    <h4>Dados Pessoais</h4>
+    {{ perfil_form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Salvar alterações</button>
+</form>
+
+<a href="{% url 'alterar_senha' %}" class="btn btn-warning mt-3">Alterar Senha</a>
+<a href="{% url 'painel_loja' %}" class="btn btn-warning mt-3">Voltar ao Painel</a>
+
+{% endblock %}

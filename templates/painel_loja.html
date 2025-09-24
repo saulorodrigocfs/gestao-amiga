@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Painel de Lojas</h2>
+<h2>Painel Principal</h2>
 
 <h3>Minhas Lojas</h3>
 <ul>
@@ -17,4 +17,6 @@
 </ul>
 
 <a href="{% url 'cadastrar_loja' %}">Cadastrar Nova Loja</a>
+<a href="{% url 'perfil_usuario' %}">Perfil</a>
+
 {% endblock %}

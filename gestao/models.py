@@ -16,7 +16,8 @@ class Loja(models.Model):
     nome = models.CharField(max_length=100)
     endereco = models.CharField(max_length=200, blank=True)
     dono = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='lojas', on_delete=models.CASCADE)
-    criada_em = models.DateTimeField(auto_now_add=True)  
+    criada_em = models.DateTimeField(auto_now_add=True)
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True)  
 
 #Produto do usuário/loja
 class Produto(models.Model):

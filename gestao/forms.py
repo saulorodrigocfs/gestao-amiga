@@ -1,5 +1,7 @@
 from django import forms
-from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa
+from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa, PerfilUsuario
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
 
 class LojaForm(forms.ModelForm):
     class Meta:
@@ -64,3 +66,44 @@ class FiltroRelatorioForm(forms.Form):
         required=False,
         empty_label="Todos os produtos"
     )
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        labels = {
+            'first_name': 'Nome',
+            'last_name': 'Sobrenome',
+            'email': 'E-mail',
+        }
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+
+class PerfilUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = PerfilUsuario
+        fields = ['telefone', 'endereco']
+        widgets = {
+            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
+            'endereco': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    
+    old_password = forms.CharField(
+        label = "Senha atual",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        )
+    new_password1 = forms.CharField(
+        label = "Nova senha",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        )
+    new_password2 = forms.CharField(
+        label = "Confirme a nova senha",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        )
+

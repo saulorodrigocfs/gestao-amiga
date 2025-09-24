@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Alterar Senha</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Atualizar Senha</button>
+</form>
+
+<a href="{% url 'perfil_usuario' %}" class="btn btn-warning mt-3">Voltar ao Perfil</a>
+
+{% endblock %}

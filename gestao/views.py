@@ -6,9 +6,11 @@ from reportlab.lib.pagesizes import A4, landscape
 from django.views.decorators.csrf import csrf_exempt
 from urllib.parse import parse_qs
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa
-from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm, FiltroRelatorioForm
+from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa, PerfilUsuario
+from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm, FiltroRelatorioForm, UserForm, PerfilUsuarioForm, CustomPasswordChangeForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.db.models import Sum
 
 
@@ -426,3 +428,38 @@ def exportar_relatorio_pdf(request, loja_id):
     p.save()
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='relatorio_lucros.pdf')
+
+
+@login_required
+def perfil_usuario(request):
+    perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
+
+    if request.method=="POST":
+        user_form = UserForm(request.POST, instance=request.user)
+        perfil_form = PerfilUsuarioForm(request.POST, instance=perfil)
+        if user_form.is_valid() and perfil_form.is_valid():
+            user_form.save()
+            perfil_form.save()
+            messages.success(request, "Perfil atualizado com sucesso!")
+            return redirect('perfil_usuario')
+    else:
+        user_form = UserForm(instance=request.user)
+        perfil_form = PerfilUsuarioForm(instance=perfil)
+
+    return render(request, 'perfil_usuario.html', {
+        'user_form': user_form,
+        'perfil_form': perfil_form,
+    })
+
+@login_required
+def alterar_senha(request):
+    if request.method=="POST":
+        form = CustomPasswordChangeForm(user = request.user, data = request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Senha alterada com sucesso!")
+            return redirect('perfil_usuario')
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+    return render(request, 'alterar_senha.html', {'form': form})
