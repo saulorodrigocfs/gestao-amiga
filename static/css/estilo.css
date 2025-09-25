@@ -1,0 +1,50 @@
+/* Variáveis de cores */
+:root {
+    --cor-fundo: #f9f9f9;
+    --cor-primaria: #1a3e6b;
+    --cor-secundaria: #28a745;
+    --cor-texto: #333333;
+    --cor-borda: #e0e0e0;
+}
+
+/* Corpo do site*/
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--cor-primaria);
+    color: white;
+}
+
+/* Título navbar */
+.brand-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: bold
+}
+
+/* Botões Principais */
+.btn-primary {
+    background-color: var(--cor-secundaria);
+    border-color: var(--cor-secundaria);
+    color: white;
+}
+
+/* Botões secundários */
+.btn-secondary {
+    background-color: #cccccc;
+    border-color: #cccccc;
+    color: #333333;
+}
+
+/* Cards (dashboard, formulários) */
+.card {
+    border: 1px solid var(--cor-borda);
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}

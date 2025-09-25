@@ -18,7 +18,13 @@ from django.db.models import Sum
 def painel_loja(request):
     user = request.user
     lojas = user.lojas.all() #lista de lojas do usuário
-    return render(request, 'painel_loja.html', {'lojas': lojas})
+
+    contexto = {
+        'lojas': lojas,
+        'mostrar_sidebar': False,
+    }
+    return render(request, 'painel_loja.html', contexto)
+
 
 @login_required
 def cadastrar_loja(request):
@@ -80,6 +86,7 @@ def dashboard_loja(request, loja_id):
         'saldo_atual': saldo_atual,
         'ultimas_vendas': ultimas_vendas,
         'despesas_recentes': despesas_recentes,
+        'mostrar_sidebar': True,
     }
     return render(request, 'dashboard_loja.html', contexto)
 

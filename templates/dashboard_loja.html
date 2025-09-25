@@ -7,7 +7,7 @@
     <!--Resumo financeiro-->
     <div class="section resumo-financeiro">
         <h3>Resumo financeiro</h3>
-        <p>Saldo atual: R$ {{ saldo_atual | floatformat:2 }}</p>
+        <p>Saldo atual do caixa: R$ {{ saldo_atual | floatformat:2 }}</p>
         <p>Total de receitas: R$ {{ total_receitas | floatformat:2 }}</p>
         <p>Total de despesas: R$ {{ total_despesas | floatformat:2 }}</p>
     </div>
@@ -29,7 +29,7 @@
         <h3>Despesas Recentes</h3>
         <ul>
             {% for despesa in despesas_recentes %}
-                <li>{{ despesa.decricao }} - R$ {{ despesa.valor | floatformat:2 }}</li>
+                <li>{{ despesa.descricao }} - R$ {{ despesa.valor | floatformat:2 }}</li>
             {% empty %}
                 <li>Nenhuma despesa registrada</li>
             {% endfor %}
