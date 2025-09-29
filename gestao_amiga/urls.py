@@ -38,7 +38,7 @@ urlpatterns = [
         name="password_reset_confirm"),
     #Tela de sucesso após redefinição
     path("senha/reset/complete/", auth_views.PasswordResetCompleteView.as_view(
-        template_name="recuperar_senha/recuperar_senha_complete.html"),
+        template_name="recuperar_senha/resetar_senha_complete.html"),
         name="password_reset_complete"),
 
 ]
