@@ -4,8 +4,11 @@
 
 <form method="get">
     {{ form.as_p }}
+    
     <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+    <a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
 </form>
+
 
 <table class="table">
     <thead>
@@ -49,5 +52,4 @@
     <button type="submit" class="btn btn-success">Exportar PDF</button>
 </form>
 
-<a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary">Voltar ao Dashboard</a>
 {% endblock %}

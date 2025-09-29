@@ -320,6 +320,8 @@ def relatorio_lucros(request, loja_id):
         data_fim = form.cleaned_data.get('data_fim')
         cliente = form.cleaned_data.get('cliente')
         produto = form.cleaned_data.get('produto')
+        forma_pagamento = form.cleaned_data.get('forma_pagamento')
+        ordenar_por = form.cleaned_data.get('ordenar_por')
 
         if data_inicio:
             vendas = vendas.filter(data__date__gte=data_inicio)
@@ -329,7 +331,23 @@ def relatorio_lucros(request, loja_id):
             vendas = vendas.filter(cliente=cliente)
         if produto:
             vendas = vendas.filter(produto=produto)
-    
+        if forma_pagamento:
+            vendas = vendas.filter(forma_pagamento=forma_pagamento)
+
+        if ordenar_por == 'data_desc':
+            vendas = vendas.order_by('-data')
+        elif ordenar_por == 'data_asc':
+            vendas = vendas.order_by('data')
+        elif ordenar_por == 'lucro_desc':
+            vendas = sorted(vendas, key=lambda x: (x.preco_unitario - x.produto.preco_compra) * x.quantidade, reverse=True)
+        elif ordenar_por == 'lucro_asc':
+            vendas = sorted(vendas, key=lambda x: (x.preco_unitario - x.produto.preco_compra) * x.quantidade)
+        elif ordenar_por == 'quantidade_desc':
+            vendas = vendas.order_by('-quantidade')
+        elif ordenar_por == 'quantidade_asc':
+            vendas = vendas.order_by('quantidade')
+
+
     relatorio = []
 
     for venda in vendas:

@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Produtos da Loja {{ loja.nome }}</h2>
-<a href="{% url 'cadastro_produto' loja.id %}">Cadastrar Produto</a>
-<table>
+<h2>Lista de Produtos</h2>
+<a href="{% url 'cadastro_produto' loja.id %}" class="btn btn-primary">Cadastrar Produto</a>
+<a href="{% url 'dashboard_loja' loja.id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
+
+<table class="table">
     <tr>
         <th>Nome</th>
         <th>Preço</th>
@@ -15,13 +17,13 @@
         <td>{{ produto.preco_venda }}</td>
         <td>{{ produto.estoque }}</td>
         <td>
-            <a href="{% url 'editar_produto' loja.id produto.id%}">Editar</a>
-            <a href="{% url 'deletar_produto' loja.id produto.id %}">Deletar</a>
+            <a href="{% url 'editar_produto' loja.id produto.id%}" class="btn btn-warning btn-sm">Editar</a>
+            <a href="{% url 'deletar_produto' loja.id produto.id %}" class="btn btn-danger btn-sm">Deletar</a>
         </td>
     </tr>
     {% empty %}
     <tr><td colspan="4">Nenhum produto cadastrado.</td></tr>
     {% endfor %}
 </table>
-<a href="{% url 'dashboard_loja' loja.id %}">Voltar ao Dashboard</a>
+
 {% endblock %}

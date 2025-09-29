@@ -2,17 +2,37 @@
 {% block content %}
 
 <h1>Lista de Clientes</h1>
-<a href="{% url 'cadastrar_cliente' loja_id=loja_id %}">Cadastrar Novo Cliente</a>
-<ul>
-    {% for cliente in clientes %}
-        <li>
-            {{ cliente.nome }} - {{ cliente.email }} - {{ cliente.telefone }}
-            <a href="{% url 'editar_cliente' loja_id=loja_id pk=cliente.pk %}">Editar</a>
-            <a href="{% url 'deletar_cliente' loja_id=loja_id pk=cliente.pk %}">Deletar</a>
-        </li>
-    {% empty %}
-        <li>Nenhum Cliente Cadastrado.</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'dashboard_loja' loja_id %}">Voltar ao Dashboard</a>
+<a href="{% url 'cadastrar_cliente' loja_id=loja_id %}" class="btn btn-primary">Cadastrar Novo Cliente</a>
+<a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Telefone</th>
+            <th>Email</th>
+            <th>Endereço</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <td>{{ cliente.nome }}</td>
+            <td>{{ cliente.telefone }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.endereco }}</td>
+            <td>
+                <a href="{% url 'editar_cliente' loja_id=loja_id pk=cliente.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'deletar_cliente' loja_id=loja_id pk=cliente.pk %}" class="btn btn-danger btn-sm">Deletar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Nenhum cliente cadastrado</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

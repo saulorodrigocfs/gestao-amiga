@@ -57,6 +57,7 @@ class Fornecedor(models.Model):
     
 #Venda realizada
 class Venda(models.Model):
+    
     FORMAS_PAGAMENTO = [
         ('dinheiro', 'Espécie'),
         ('pix', 'PIX'),

@@ -2,6 +2,8 @@
 {% block content %}
 <h2>Lista de Vendas</h2>
 <a href="{% url 'cadastrar_venda' loja_id %}" class="btn btn-primary">Cadastrar Venda</a>
+<a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
+
 <table class="table">
     <thead>
         <tr>
@@ -35,5 +37,5 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'dashboard_loja' loja_id%}" class="btn btn-secondary">Voltar ao Dashboard</a>
+
 {% endblock%}

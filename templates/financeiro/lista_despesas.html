@@ -2,8 +2,10 @@
 {% block content %}
 <h2>Lista de Despesas</h2>
 
-<a href="{% url 'cadastrar_despesa' loja.id %}">Cadastrar Nova Despesa</a>
-<table>
+<a href="{% url 'cadastrar_despesa' loja.id %}" class="btn btn-primary">Cadastrar Nova Despesa</a>
+<a href="{% url 'dashboard_loja' loja.id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
+
+<table class="table">
     <thead>
         <tr>
             <th>Descrição</th>
@@ -21,8 +23,8 @@
             <td>{{ despesa.valor }}</td>
             <td>{{ despesa.data }}</td>
             <td>
-                <a href="{% url 'editar_despesa' loja_id=despesa.loja.id id=despesa.id %}">Editar</a>
-                <a href="{% url 'deletar_despesa' loja_id=despesa.loja.id id=despesa.id %}">Deletar</a>
+                <a href="{% url 'editar_despesa' loja_id=despesa.loja.id id=despesa.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'deletar_despesa' loja_id=despesa.loja.id id=despesa.id %}" class="btn btn-danger btn-sm">Deletar</a>
             </td>
         </tr>
         {% empty %}
@@ -32,5 +34,6 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'dashboard_loja' loja.id %}">Voltar ao Dashboard</a>
+
+
 {% endblock %}

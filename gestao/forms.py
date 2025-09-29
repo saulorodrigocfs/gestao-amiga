@@ -3,6 +3,26 @@ from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa, PerfilUs
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 
+
+FORMAS_PAGAMENTO = [
+    ('dinheiro', 'Espécie'),
+    ('pix', 'PIX'),
+    ('debito', 'Débito'),
+    ('credtio_avista', 'Crédito à vista'),
+    ('credito_parcelado', 'Crédito Parcelado'),
+]
+
+ORDEM_OPCOES = [
+    ('data_desc', 'Mais recentes'),
+    ('data_asc', 'Mais antigas'),
+    ('lucro_desc', 'Mais lucrativos'),
+    ('lucro_asc', 'Menos lucrativos'),
+    ('quantidade_desc', 'Mais vendidos'),
+    ('quantidade_asc', 'Menos vendidos'),
+    
+]
+
+
 class LojaForm(forms.ModelForm):
     class Meta:
         model = Loja
@@ -46,6 +66,7 @@ class DespesaForm(forms.ModelForm):
             'observacoes': forms.Textarea(attrs={'rows': 3, 'placeholders': 'Observações'}),
         }
 
+
 class FiltroRelatorioForm(forms.Form):
     data_inicio = forms.DateField(
         required=False,
@@ -64,6 +85,14 @@ class FiltroRelatorioForm(forms.Form):
         queryset=Produto.objects.all(),
         required=False,
         empty_label="Todos os produtos"
+    )
+    forma_pagamento = forms.ChoiceField(
+        choices=[("", "Todas as formas")] + FORMAS_PAGAMENTO, 
+        required=False
+    )
+    ordenar_por = forms.ChoiceField(
+        choices=ORDEM_OPCOES, 
+        required=False
     )
 
 
