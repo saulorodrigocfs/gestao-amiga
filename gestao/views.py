@@ -217,11 +217,14 @@ def cadastrar_venda(request, loja_id):
             venda = form.save(commit=False)
             venda.loja_id = loja_id
             venda.preco_unitario = venda.produto.preco_venda
-            venda.save()
+            
             #atualiza estoque produto
             produto = venda.produto
             produto.estoque -= venda.quantidade
             produto.save()
+            if venda.forma_pagamento != 'credito_parcelado':
+                venda.parcelas = 1
+            venda.save()
             return redirect('lista_vendas', loja_id=loja_id)
     else:
         form = VendaForm()
@@ -334,6 +337,7 @@ def relatorio_lucros(request, loja_id):
             'produto': venda.produto.nome,
             'data': venda.data,
             'cliente': venda.cliente,
+            'forma_pagamento': venda.forma_pagamento,
             'quantidade_vendida': venda.quantidade,
             'total_receita': venda.preco_unitario * venda.quantidade,
             'total_custo': venda.produto.preco_compra * venda.quantidade,

@@ -6,7 +6,7 @@
 <ul>
     {% for loja in lojas %}
     <li>
-        {{ loja.nome }}
+        {{ loja.nome }} - {{ loja.endereco }}
         <a href="{% url 'dashboard_loja' loja.id %}">Acessar</a>
         <a href="{% url 'editar_loja' loja.id %}">Editar</a>
         <a href="{% url 'deletar_loja' loja.id %}">Deletar</a>

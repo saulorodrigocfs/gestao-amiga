@@ -30,10 +30,9 @@ class FornecedorForm(forms.ModelForm):
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
-        fields = ['produto', 'cliente', 'quantidade']
+        fields = ['produto', 'cliente', 'quantidade', 'valor_total', 'desconto', 'forma_pagamento', 'parcelas']
         widgets = {
             'quantidade': forms.NumberInput(attrs={'min': 1}),
-            'preco_unitario': forms.NumberInput(attrs={'step': '0.01'}),
         }
 
 class DespesaForm(forms.ModelForm):

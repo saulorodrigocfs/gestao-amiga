@@ -12,6 +12,7 @@
         <tr>
             <th>Data</th>
             <th>Cliente</th>
+            <th>Forma de Pagamento</th>
             <th>Produto</th>
             <th>Quantidade Vendida</th>
             <th>Total Receita</th>
@@ -22,8 +23,9 @@
     <tbody>
         {% for item in relatorio %}
         <tr>
-            <td>{{ item.data }}</td>
+            <td>{{ item.data|date:"d/m/Y" }}</td>
             <td>{{ item.cliente }}</td>
+            <td>{{ item.forma_pagamento }}</td>
             <td>{{ item.produto }}</td>
             <td>{{ item.quantidade_vendida }}</td>
             <td>{{ item.total_receita }}</td>

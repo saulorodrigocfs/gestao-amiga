@@ -57,16 +57,27 @@ class Fornecedor(models.Model):
     
 #Venda realizada
 class Venda(models.Model):
+    FORMAS_PAGAMENTO = [
+        ('dinheiro', 'Espécie'),
+        ('pix', 'PIX'),
+        ('debito', 'Débito'),
+        ('credtio_avista', 'Crédito à vista'),
+        ('credito_parcelado', 'Crédito Parcelado'),
+    ]
+
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name="vendas", default=1)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="vendas_produto")
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="vendas_cliente", null = True)
     quantidade = models.PositiveIntegerField()
     preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    desconto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    forma_pagamento = models.CharField(max_length=20, choices=FORMAS_PAGAMENTO, default='dinheiro')
+    parcelas = models.IntegerField(default=1)
     data = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        self.valor_total = self.quantidade * self.preco_unitario
+        self.valor_total = self.quantidade * self.preco_unitario - self.desconto
         super().save(*args, **kwargs)
 
     def __str__(self):

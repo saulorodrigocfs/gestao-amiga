@@ -7,8 +7,10 @@
         <tr>
             <th>Produtos</th>
             <th>Quantidade</th>
+            <th>Forma de Pagamento</th>
             <th>Cliente</th>
             <th>Preço Unitário</th>
+            <th>Desconto</th>
             <th>Valor Total</th>
             <th>Data</th>
             <th>Ações</th>
@@ -19,10 +21,12 @@
         <tr>
             <td>{{ venda.produto.nome }}</td>
             <td>{{ venda.quantidade }}</td>
+            <td>{{ venda.forma_pagamento }}</td>
             <td>{{ venda.cliente }}</td>
             <td>{{ venda.preco_unitario }}</td>
+            <td>{{ venda.desconto }}</td>
             <td>{{ venda.valor_total }}</td>
-            <td>{{ venda.data }}</td>
+            <td>{{ venda.data|date:"d/m/Y" }}</td>
             <td>
                 <a href="{% url 'editar_venda' loja_id venda.id %}" class="btn btn-warning btn-sm">Editar</a>
                 <a href="{% url 'deletar_venda' loja_id venda.id %}" class="btn btn-danger btn-sm">Deletar</a>
