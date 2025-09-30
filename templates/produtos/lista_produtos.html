@@ -7,17 +7,19 @@
 <table class="table">
     <tr>
         <th>Nome</th>
+        <th>Custo</th>
         <th>Preço</th>
         <th>Estoque</th>
         <th>Ações</th>
     </tr>
-    {% for produto in produtos %}
+    {% for produto in page_obj %}
     <tr>
         <td>{{ produto.nome }}</td>
+        <td>{{ produto.preco_compra }}</td>
         <td>{{ produto.preco_venda }}</td>
         <td>{{ produto.estoque }}</td>
         <td>
-            <a href="{% url 'editar_produto' loja.id produto.id%}" class="btn btn-warning btn-sm">Editar</a>
+            <a href="{% url 'editar_produto' loja.id produto.id %}" class="btn btn-warning btn-sm">Editar</a>
             <a href="{% url 'deletar_produto' loja.id produto.id %}" class="btn btn-danger btn-sm">Deletar</a>
         </td>
     </tr>
@@ -25,5 +27,19 @@
     <tr><td colspan="4">Nenhum produto cadastrado.</td></tr>
     {% endfor %}
 </table>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Primeira</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+    <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+    {% endif %}
+</div>
 
 {% endblock %}

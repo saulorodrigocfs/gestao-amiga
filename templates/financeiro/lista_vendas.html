@@ -19,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for venda in vendas %}
+        {% for venda in page_obj %}
         <tr>
             <td>{{ venda.produto.nome }}</td>
             <td>{{ venda.quantidade }}</td>
@@ -37,5 +37,19 @@
         {% endfor %}
     </tbody>
 </table>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Primeira</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+    <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+    {% endif %}
+</div>
 
 {% endblock%}

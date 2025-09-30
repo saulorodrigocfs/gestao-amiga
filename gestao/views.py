@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.db.models import Sum
+from django.core.paginator import Paginator
 
 
 @login_required
@@ -94,8 +95,13 @@ def dashboard_loja(request, loja_id):
 @login_required
 def lista_produtos(request, loja_id):
     loja = get_object_or_404(Loja, id=loja_id, dono=request.user)
-    produtos = loja.produtos.all()
-    return render(request, 'produtos/lista_produtos.html', {'loja': loja, 'produtos': produtos} )
+    produtos = loja.produtos.all().order_by('-id')
+
+    paginator = Paginator(produtos, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'produtos/lista_produtos.html', {'loja': loja, 'produtos': page_obj, 'page_obj': page_obj} )
 
 @login_required
 def cadastro_produto(request, loja_id):
@@ -135,8 +141,13 @@ def deletar_produto(request, loja_id, produto_id):
 
 @login_required
 def lista_clientes(request, loja_id):
-    clientes = Cliente.objects.filter(usuario=request.user, loja_id=loja_id)
-    return render(request, 'financeiro/lista_clientes.html', {'clientes': clientes, 'loja_id': loja_id} )
+    clientes = Cliente.objects.filter(usuario=request.user, loja_id=loja_id)    
+
+    paginator = Paginator(clientes, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'financeiro/lista_clientes.html', {'clientes': page_obj, 'loja_id': loja_id, 'page_obj': page_obj} )
 
 @login_required
 def cadastrar_cliente(request, loja_id):
@@ -168,7 +179,12 @@ def deletar_cliente(request, loja_id, pk):
 @login_required
 def lista_fornecedores(request, loja_id):
     fornecedores = Fornecedor.objects.filter(loja_id=loja_id)
-    return render(request, 'financeiro/lista_fornecedores.html', {'fornecedores': fornecedores, 'loja_id': loja_id} )
+
+    paginator = Paginator(fornecedores, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'financeiro/lista_fornecedores.html', {'fornecedores': page_obj, 'loja_id': loja_id, 'page_obj': page_obj} )
 
 @login_required
 def cadastrar_fornecedor(request, loja_id):
@@ -207,7 +223,12 @@ def deletar_fornecedor(request, loja_id, pk):
 @login_required
 def lista_vendas(request, loja_id):
     vendas = Venda.objects.filter(loja_id=loja_id).select_related('produto')
-    return render(request, 'financeiro/lista_vendas.html', {'vendas': vendas, 'loja_id': loja_id} )
+
+    paginator = Paginator(vendas, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'financeiro/lista_vendas.html', {'vendas': page_obj, 'loja_id': loja_id, 'page_obj': page_obj} )
 
 @login_required
 def cadastrar_venda(request, loja_id):
@@ -275,7 +296,12 @@ def deletar_venda(request, loja_id, pk):
 def lista_despesas(request, loja_id):
     loja = get_object_or_404(Loja, id=loja_id)
     despesas = Despesa.objects.filter(loja=loja)
-    return render(request, 'financeiro/lista_despesas.html', {'despesas': despesas, 'loja': loja})
+
+    paginator = Paginator(despesas, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'financeiro/lista_despesas.html', {'despesas': page_obj, 'loja': loja, 'page_obj': page_obj})
 
 @login_required
 def cadastrar_despesa(request, loja_id):
@@ -314,6 +340,10 @@ def relatorio_lucros(request, loja_id):
     loja = request.user.lojas.get(id=loja_id)
     vendas = Venda.objects.filter(loja=loja)
 
+    paginator = Paginator(vendas, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     form = FiltroRelatorioForm(request.GET or None)
     if form.is_valid():
         data_inicio = form.cleaned_data.get('data_inicio')
@@ -350,7 +380,7 @@ def relatorio_lucros(request, loja_id):
 
     relatorio = []
 
-    for venda in vendas:
+    for venda in page_obj:
         relatorio.append({
             'produto': venda.produto.nome,
             'data': venda.data,
@@ -364,7 +394,7 @@ def relatorio_lucros(request, loja_id):
     
     
     return render(request, 'financeiro/relatorio_lucros.html', {
-        'loja_id': loja_id, 'form': form, 'relatorio': relatorio
+        'loja_id': loja_id, 'form': form, 'relatorio': relatorio, 'page_obj': page_obj
     })
 
 

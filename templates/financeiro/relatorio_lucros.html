@@ -43,6 +43,20 @@
     </tbody>
 </table>
 
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Primeira</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+    <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+    {% endif %}
+</div>
+
 <form method="post" action="{% url 'exportar_relatorio_pdf' loja_id=loja_id %}">
     {% csrf_token %}
     <input type="hidden" name="data_inicio" value="{{ request.GET.data_inicio }}">
@@ -51,5 +65,6 @@
     <input type="hidden" name="produto" value="{{ request.GET.produto }}">
     <button type="submit" class="btn btn-success">Exportar PDF</button>
 </form>
+
 
 {% endblock %}
