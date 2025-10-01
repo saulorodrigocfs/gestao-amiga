@@ -141,7 +141,7 @@ def deletar_produto(request, loja_id, produto_id):
 
 @login_required
 def lista_clientes(request, loja_id):
-    clientes = Cliente.objects.filter(usuario=request.user, loja_id=loja_id)    
+    clientes = Cliente.objects.filter(usuario=request.user, loja_id=loja_id).order_by('-id')  
 
     paginator = Paginator(clientes, 10)
     page_number = request.GET.get('page')
@@ -178,7 +178,7 @@ def deletar_cliente(request, loja_id, pk):
 
 @login_required
 def lista_fornecedores(request, loja_id):
-    fornecedores = Fornecedor.objects.filter(loja_id=loja_id)
+    fornecedores = Fornecedor.objects.filter(loja_id=loja_id).order_by('-id')
 
     paginator = Paginator(fornecedores, 10)
     page_number = request.GET.get('page')
@@ -222,7 +222,7 @@ def deletar_fornecedor(request, loja_id, pk):
 
 @login_required
 def lista_vendas(request, loja_id):
-    vendas = Venda.objects.filter(loja_id=loja_id).select_related('produto')
+    vendas = Venda.objects.filter(loja_id=loja_id).select_related('produto').order_by('-id')
 
     paginator = Paginator(vendas, 10)
     page_number = request.GET.get('page')
@@ -295,7 +295,7 @@ def deletar_venda(request, loja_id, pk):
 @login_required
 def lista_despesas(request, loja_id):
     loja = get_object_or_404(Loja, id=loja_id)
-    despesas = Despesa.objects.filter(loja=loja)
+    despesas = Despesa.objects.filter(loja=loja).order_by('-id')
 
     paginator = Paginator(despesas, 10)
     page_number = request.GET.get('page')
@@ -338,7 +338,7 @@ def deletar_despesa(request, loja_id, id):
 @login_required
 def relatorio_lucros(request, loja_id):
     loja = request.user.lojas.get(id=loja_id)
-    vendas = Venda.objects.filter(loja=loja)
+    vendas = Venda.objects.filter(loja=loja).order_by('-id')
 
     paginator = Paginator(vendas, 10)
     page_number = request.GET.get('page')

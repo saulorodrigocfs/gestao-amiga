@@ -1,11 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Login</h2>
+<div class="card" style="max-width: 400px; margin: 50px auto; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; margin-bottom: 20px; color: var(--cor-primaria);">Login</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Entrar</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Entrar</button>
     </form>
-    <a href="{% url 'password_reset' %}">Esqueceu a senha?</a>
-    <p>Não tem conta? <a href="{% url 'register' %}">Cadastrar</a></p>
+
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="{% url 'password_reset' %}" style="color: var(--cor-primaria); text-decoration: none;">Esqueceu a senha?</a>
+    </div>
+
+    <p style="text-align: center; margin-top: 15px;">
+        Não tem conta? <a href="{% url 'register' %}" style="color: var(--cor-primaria); text-decoration: none;">Cadastrar</a>
+    </p>
+</div>
+
 {% endblock %}

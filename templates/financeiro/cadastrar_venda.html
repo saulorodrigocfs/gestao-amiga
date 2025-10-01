@@ -2,9 +2,10 @@
 {% block content %}
 <h2>Cadastrar Venda</h2>
 
-<form method="post">
+<form method="post" id="form-venda">
     {% csrf_token %}
     {{ form.as_p }}
+
     <button type="submit" class="btn btn-success">Registrar Venda</button>
     <a href="{% url 'lista_vendas' loja_id %}" class="btn btn-secondary">Cancelar</a>
 </form>

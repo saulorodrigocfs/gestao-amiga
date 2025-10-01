@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Cadastro</h2>
+<div class="card" style="max-width: 400px; margin: 50px auto; padding: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Cadastro</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Cadastrar</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Cadastrar</button>
     </form>
-    <p>Já tem conta? <a href="{% url 'login' %}">Entrar</a></p>
+    <p style="text-align: center; margin-top: 15px;">
+        Já tem conta? <a href="{% url 'login' %}">Entrar</a>
+    </p>
+</div>
+
 {% endblock %}
