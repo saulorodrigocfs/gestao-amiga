@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gestao', #nossa nova app
     'accounts', #app para usuários
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

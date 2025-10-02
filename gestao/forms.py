@@ -13,6 +13,7 @@ FORMAS_PAGAMENTO = [
 ]
 
 ORDEM_OPCOES = [
+    ('', 'Selecione'),
     ('data_desc', 'Mais recentes'),
     ('data_asc', 'Mais antigas'),
     ('lucro_desc', 'Mais lucrativos'),
