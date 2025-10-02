@@ -1,22 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Painel Principal</h2>
+<div class="container" style="margin-top: 30px;">
+    <h2 class="mb-4" style="color: var(--cor-primaria);">Painel Principal</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Minhas Lojas</h3>
+        <a href="{% url 'cadastrar_loja' %}" class="btn btn-primary">+ Nova Loja</a>
+    </div>
 
-<h3>Minhas Lojas</h3>
-<ul>
-    {% for loja in lojas %}
-    <li>
-        {{ loja.nome }} - {{ loja.endereco }}
-        <a href="{% url 'dashboard_loja' loja.id %}">Acessar</a>
-        <a href="{% url 'editar_loja' loja.id %}">Editar</a>
-        <a href="{% url 'deletar_loja' loja.id %}">Deletar</a>
-    </li>
-    {% empty %}
-    <li><em>Nenhuma loja cadastrada ainda.</em></li>
-    {% endfor %}
-</ul>
+    {% if lojas %}
+        <div class="row">
+            {% for loja in lojas %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100" style="box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 15px;">
+                    <h5 style="color: var(--cor-primaria);">{{ loja.nome }}</h5>
+                    <p style="font-size: 0.9rem; color: #666;">{{ loja.endereco }}</p>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="{% url 'dashboard_loja' loja.id %}" class="btn btn-primary btn-sm">Acessar</a>
+                        <a href="{% url 'editar_loja' loja.id %}" class="btn btn-secondary btn-sm">Editar</a>
+                        <a href="{% url 'deletar_loja' loja.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Nenhuma loja cadastrada ainda.
+        </div>
+    {% endif %}
 
-<a href="{% url 'cadastrar_loja' %}">Cadastrar Nova Loja</a>
-<a href="{% url 'perfil_usuario' %}">Perfil</a>
-
+    <div class="mt-4">
+        <a href="{% url 'perfil_usuario' %}" class="btn btn-secondary">Perfil</a>
+    </div>
+</div>
 {% endblock %}

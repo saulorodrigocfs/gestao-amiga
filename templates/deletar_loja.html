@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Deletar Loja</h2>
-<p>Tem certeza que deseja deletar a loja "{{ loja.nome }}"?</p>
-
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Sim, deletar</button>
-    <a href="{% url 'painel_loja' %}">Cancelar</a>
-</form>
+<div class="container" style="max-width: 500px; margin-top:50px;">
+    <div class="card p-4">
+        <h4 style="color: var(--cor-primaria);">Excluir Loja: {{ loja.nome }}</h4>
+        <p>Tem certeza que deseja excluir esta loja?</p>
+        <form method="post" class="d-flex gap-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+            <a href="{% url 'painel_loja' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
 {% endblock %}
