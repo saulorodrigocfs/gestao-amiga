@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Deletar Venda</h2>
-<p>Tem certea que deseja deletar a venda de {{ venda.produto.nome }} ({{ venda.quantidade }} unidades)?</p>
-<form method="post">
+<div class="card" style="max-width: 500px; margin: 50px auto; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.01);">
+    <h2 style="text-align: center; color: var(--cor-primaria); margin-bottom: 20px;">Deletar Venda</h2>
+    <p style="text-align: center; font-size: 1rem;">
+        Tem certea que deseja deletar a venda de <strong>{{ venda.produto.nome }}</strong> ({{ venda.quantidade }} unidades)?
+    </p>
+
+    <form method="post" style="text-align: center; margin-top: 25px;">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">SIm, deletar</button>
-    <a href="{% url 'lista_vendas' loja_id %}" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-danger" style="margin-right: 10px;">Deletar</button>
+    <a href="{% url 'lista_vendas' loja_id %}" class="btn btn-success">Cancelar</a>
 </form>
+</div>
+
 {% endblock %}

@@ -135,8 +135,10 @@ def editar_produto(request, loja_id, produto_id):
 def deletar_produto(request, loja_id, produto_id):
     loja = get_object_or_404(Loja, id=loja_id, dono=request.user)
     produto = get_object_or_404(Produto, id=produto_id, loja=loja)
-    produto.delete()
-    return redirect('lista_produtos', loja_id=loja.id)
+    if request.method == "POST":
+        produto.delete()
+        return redirect('lista_despesas', loja_id=loja.id)
+    return render(request, 'produtos/deletar_produto.html', {'produto': produto, 'loja': loja})
 
 
 @login_required
@@ -171,9 +173,12 @@ def editar_cliente(request, loja_id, pk):
 
 @login_required
 def deletar_cliente(request, loja_id, pk):
+    loja = get_object_or_404(Loja, id=loja_id)
     cliente = get_object_or_404(Cliente, pk=pk, usuario=request.user, loja_id=loja_id)
-    cliente.delete()
-    return redirect('lista_clientes', loja_id=loja_id)
+    if request.method == "POST":
+        cliente.delete()
+        return redirect('lista_clientes', loja_id=loja_id)
+    return render(request, 'financeiro/deletar_cliente.html', {'cliente': cliente, 'loja': loja})
 
 
 @login_required
