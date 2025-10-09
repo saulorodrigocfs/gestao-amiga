@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{% if produto %}Editar{% else %}Cadastrar{% endif %} Produto - {{ loja.nome }}</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p}}
-    <button type="submit">{% if produto %}Atualizar{% else %}Cadastrar{% endif %}</button>
-</form>
-><a href="{% url 'lista_produtos' loja.id %}">Voltar à Lista de Produtos</a>
+<div style="max-width: 800px; margin: 50px left; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align: left; color: var(--cor-primaria); margin-bottom: 20px;">
+        {% if produto %}Editar{% else %}Cadastrar{% endif %} Produto
+    </h2>
+
+    <form method="POST" style="display: flex; flex-direction: column; align-items: left;">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div style="text-align: left; margin-top: 20px;">
+            <button type="submit" class="btn btn-success" style="margin-right: 10px;">
+                {% if produto %}Atualizar{% else %}Cadastrar{% endif %}
+            </button>
+            <a href="{% url 'lista_produtos' loja.id %}" class="btn btn-secondary">Voltar à Lista</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

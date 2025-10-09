@@ -1,11 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>{% if form.instance.pk %}Editar{% else %}Cadastrar{% endif %} Cliente</h1>
+<div style="max-width: 800px; margin: 50px left; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align: left; color: var(--cor-primaria); margin-bottom: 20px;">
+        {% if form.instance.pk %}Editar{% else %}Cadastrar{% endif %} Cliente    
+    </h2>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button> 
-</form>
-<a href="{% url 'lista_clientes' loja_id=loja_id %}">Voltar à Lista</a>
+    <form method="POST" style="display: flex; flex-direction: column; align-items: left;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="text-align: left; margin-top: 20px;">
+            <button type="submit" class="btn btn-success" style="margin-right: 10px;">
+                {% if form.instance.pk %}Atualizar{% else %}Cadastrar{% endif %}
+            </button>
+            <a href="{% url 'lista_clientes' loja_id=loja_id %}" class="btn btn-secondary">Voltar à Lista</a>
+        </div> 
+    </form>
+</div>
 {% endblock %}
+
