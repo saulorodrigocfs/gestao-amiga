@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="max-width: 800px; margin: 50px left; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h2 style="text-align: left; color: var(--cor-primaria); margin-bottom: 20px;">
-        {% if produto %}Editar{% else %}Cadastrar{% endif %} Produto
-    </h2>
+<div style="margin: 50px left; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h3 style="text-align: left; color: var(--cor-secondary); margin-bottom: 20px;">
+        Produto
+    </h3>
 
     <form method="POST" style="display: flex; flex-direction: column; align-items: left;">
         {% csrf_token %}

@@ -36,7 +36,7 @@ class LojaForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'preco_compra', 'preco_venda', 'estoque']
+        fields = ['nome', 'descricao', 'preco_compra', 'preco_venda', 'estoque']
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -55,6 +55,13 @@ class VendaForm(forms.ModelForm):
         widgets = {
             'quantidade': forms.NumberInput(attrs={'min': 1}),
         }
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['produto'].queryset = Produto.objects.filter(loja__dono=user)
+            self.fields['produto'].label_from_instance = lambda obj: f"{obj.nome} - {obj.descricao}"
+            self.fields['cliente'].queryset = Cliente.objects.filter(loja__dono=user)
 
 class DespesaForm(forms.ModelForm):
     class Meta:

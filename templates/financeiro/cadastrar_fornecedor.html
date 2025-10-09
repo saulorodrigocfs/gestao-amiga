@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{% if form.instance.pk %}Editar Fornecedor{% else %}Cadastrar Fornecedor{% endif %}</h2>
+<div style="margin: 50px left; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h3 style="text-align: left; color: var(--cor-secondary); margin-bottom: 20px;">
+        Fornecedor
+    </h3>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Salvar</button>
-    <a href="{% url 'lista_fornecedores' loja_id %}" class="btn btn-secondary">Voltar</a>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="{% url 'lista_fornecedores' loja_id %}" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>
 {% endblock %}

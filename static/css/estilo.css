@@ -67,3 +67,9 @@ form .helptext {
     color: #fff;
 }
 
+.text-danger, .form-error {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    background-color: #ffe5e5;
+}

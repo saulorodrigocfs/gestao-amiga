@@ -7,6 +7,7 @@
 <table class="table">
     <tr>
         <th>Nome</th>
+        <th>Descrição</th>
         <th>Custo</th>
         <th>Preço</th>
         <th>Estoque</th>
@@ -15,6 +16,7 @@
     {% for produto in page_obj %}
     <tr>
         <td>{{ produto.nome }}</td>
+        <td>{{ produto.descricao }}</td>
         <td>{{ produto.preco_compra }}</td>
         <td>{{ produto.preco_venda }}</td>
         <td>{{ produto.estoque }}</td>

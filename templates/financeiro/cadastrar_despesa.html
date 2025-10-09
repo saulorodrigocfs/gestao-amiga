@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Cadastrar Despesa</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
-<a href="{% url 'lista_despesas' loja.id %}">Voltar à lista</a>
+<div style="margin: 50px left; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h3 style="text-align: left; color: var(--cor-secondary); margin-bottom: 20px;">
+        Despesa
+    </h3>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="{% url 'lista_despesas' loja.id %}" class="btn btn-secondary">Voltar à lista</a>
+    </form>
+</div>
 {% endblock %}

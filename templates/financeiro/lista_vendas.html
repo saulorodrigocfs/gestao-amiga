@@ -8,6 +8,7 @@
     <thead>
         <tr>
             <th>Produtos</th>
+            <th>Descrição</th>
             <th>Quantidade</th>
             <th>Forma de Pagamento</th>
             <th>Cliente</th>
@@ -22,6 +23,7 @@
         {% for venda in page_obj %}
         <tr>
             <td>{{ venda.produto.nome }}</td>
+            <td>{{ venda.produto.descricao }}</td>
             <td>{{ venda.quantidade }}</td>
             <td>{{ venda.forma_pagamento }}</td>
             <td>{{ venda.cliente }}</td>

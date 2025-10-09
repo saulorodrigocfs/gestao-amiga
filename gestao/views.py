@@ -95,7 +95,7 @@ def dashboard_loja(request, loja_id):
 @login_required
 def lista_produtos(request, loja_id):
     loja = get_object_or_404(Loja, id=loja_id, dono=request.user)
-    produtos = loja.produtos.all().order_by('-id')
+    produtos = loja.produtos.all().order_by('nome', 'descricao')
 
     paginator = Paginator(produtos, 10)
     page_number = request.GET.get('page')
@@ -238,7 +238,7 @@ def lista_vendas(request, loja_id):
 @login_required
 def cadastrar_venda(request, loja_id):
     if request.method == "POST":
-        form = VendaForm(request.POST)
+        form = VendaForm(request.POST, user=request.user)
         if form.is_valid():
             venda = form.save(commit=False)
             venda.loja_id = loja_id
@@ -253,7 +253,7 @@ def cadastrar_venda(request, loja_id):
             venda.save()
             return redirect('lista_vendas', loja_id=loja_id)
     else:
-        form = VendaForm()
+        form = VendaForm(user=request.user)
     return render(request, 'financeiro/cadastrar_venda.html', {'loja_id': loja_id, 'form': form})
 
 @login_required
@@ -355,9 +355,9 @@ def relatorio_lucros(request, loja_id):
         ordenar_por = form.cleaned_data.get('ordenar_por')
 
         if data_inicio:
-            vendas = vendas.filter(data_date_gte=data_inicio)
+            vendas = vendas.filter(data__gte=data_inicio)
         if data_fim:
-            vendas = vendas.filter(data_date_lte=data_fim)
+            vendas = vendas.filter(data__lte=data_fim)
         if cliente:
             vendas = vendas.filter(cliente=cliente)
         if produto:

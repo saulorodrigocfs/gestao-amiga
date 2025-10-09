@@ -23,6 +23,7 @@ class Loja(models.Model):
 class Produto(models.Model):
     loja = models.ForeignKey(Loja, related_name='produtos', on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
+    descricao = models.CharField(max_length=100, default="---")
     preco_compra = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     preco_venda = models.DecimalField(max_digits=8, decimal_places=2, default=1)
     estoque = models.IntegerField()
@@ -68,7 +69,7 @@ class Venda(models.Model):
 
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name="vendas", default=1)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="vendas_produto")
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="vendas_cliente", null = True)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="vendas_cliente", blank = True, null = True)
     quantidade = models.PositiveIntegerField()
     preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=1)
