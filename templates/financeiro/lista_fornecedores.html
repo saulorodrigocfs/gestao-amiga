@@ -2,10 +2,11 @@
 {% block content %}
 <h2>Lista de Fornecedores</h2>
 
-<a href="{% url 'cadastrar_fornecedor' loja_id %}" class="btn btn-primary">Cadastrar</a>
+<a href="{% url 'cadastrar_fornecedor' loja_id %}" class="btn btn-primary">Cadastrar Fornecedor</a>
 <a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
 
-<table class="table">
+<div class="table-responsive mt-3">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Nome</th>
@@ -34,6 +35,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 <div class="pagination">
     {% if page_obj.has_previous %}

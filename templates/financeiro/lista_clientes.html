@@ -5,7 +5,8 @@
 <a href="{% url 'cadastrar_cliente' loja_id=loja_id %}" class="btn btn-primary">Cadastrar Novo Cliente</a>
 <a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
 
-<table class="table">
+<div class="table-responsive mt-3">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Cliente</th>
@@ -34,6 +35,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 <div class="pagination">
     {% if page_obj.has_previous %}

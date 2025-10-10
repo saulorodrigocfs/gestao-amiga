@@ -5,10 +5,10 @@
         Despesa
     </h3>
 
-    <form method="post">
+    <form class="auth-form" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Salvar</button>
+        <button type="submit" class="btn btn-success">Cadastrar</button>
         <a href="{% url 'lista_despesas' loja.id %}" class="btn btn-secondary">Voltar à lista</a>
     </form>
 </div>

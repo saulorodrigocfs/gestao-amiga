@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <div style="margin: 50px left; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h2 style="text-align: left; color: var(--cor-primaria); margin-bottom: 20px;">
+    <h2 class="title_page" style="color: var(--cor-primaria); margin-bottom: 20px;">
         Recuperar Senha
     </h2>
-    <form method="POST">
+    <form class="auth-form" method="POST">
         {% csrf_token %}
         {{ form.email.label_tag }}
         {{ form.email }}
-        <button type="submit" class="btn btn-danger btn-sm" style="margin-left: 10px;">Enviar link de recuperação</button>
+        <button type="submit" class="btn btn-danger btn-sm">Enviar link de recuperação</button>
         <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Voltar à página de Login</a>
     </form>
 </div>

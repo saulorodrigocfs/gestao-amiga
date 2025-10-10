@@ -5,12 +5,12 @@
         Venda
     </h3>
 
-    <form method="post" id="form-venda" style="display: flex; flex-direction: column; align-items: left;">
+    <form class="auth-form" method="post" id="form-venda" style="display: flex; flex-direction: column; align-items: left;">
         {% csrf_token %}
         {{ form.as_p }}
         <div style="text-align: left; margin-top: 20px;">
-            <button type="submit" class="btn btn-success">Registrar Venda</button>
-            <a href="{% url 'lista_vendas' loja_id %}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">Cadastrar</button>
+            <a href="{% url 'lista_vendas' loja_id %}" class="btn btn-secondary">Voltar à lista</a>
         </div>
     </form>
 </div>

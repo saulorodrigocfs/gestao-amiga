@@ -4,10 +4,11 @@
 <a href="{% url 'cadastrar_venda' loja_id %}" class="btn btn-primary">Cadastrar Venda</a>
 <a href="{% url 'dashboard_loja' loja_id %}" class="btn btn-secondary btn-sm">Voltar ao Dashboard</a>
 
-<table class="table">
+<div class="table-responsive mt-3">
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>Produtos</th>
+            <th style="text-align: left;">Produtos</th>
             <th>Descrição</th>
             <th>Quantidade</th>
             <th>Forma de Pagamento</th>
@@ -22,7 +23,7 @@
     <tbody>
         {% for venda in page_obj %}
         <tr>
-            <td>{{ venda.produto.nome }}</td>
+            <td style="text-align: left;">{{ venda.produto.nome }}</td>
             <td>{{ venda.produto.descricao }}</td>
             <td>{{ venda.quantidade }}</td>
             <td>{{ venda.forma_pagamento }}</td>
@@ -39,6 +40,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 <div class="pagination">
     {% if page_obj.has_previous %}
