@@ -63,7 +63,7 @@ class Venda(models.Model):
         ('dinheiro', 'Espécie'),
         ('pix', 'PIX'),
         ('debito', 'Débito'),
-        ('credtio_avista', 'Crédito à vista'),
+        ('credito_avista', 'Crédito à vista'),
         ('credito_parcelado', 'Crédito Parcelado'),
     ]
 
