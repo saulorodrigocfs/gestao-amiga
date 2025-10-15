@@ -397,7 +397,7 @@ def deletar_despesa(request, loja_id, id):
 @login_required
 def relatorio_lucros(request, loja_id):
     loja = request.user.lojas.get(id=loja_id)
-    vendas = Venda.objects.filter(loja=loja)
+    itens = ItemVenda.objects.filter(venda__loja=loja).select_related('venda', 'produto')
 
     form = FiltroRelatorioForm(request.GET or None)
     if form.is_valid():
@@ -409,55 +409,59 @@ def relatorio_lucros(request, loja_id):
         ordenar_por = form.cleaned_data.get('ordenar_por')
 
         if data_inicio:
-            vendas = vendas.filter(data__gte=data_inicio)
+            itens = itens.filter(data__gte=data_inicio)
         if data_fim:
-            vendas = vendas.filter(data__lte=data_fim)
+            itens = itens.filter(data__lte=data_fim)
         if cliente:
-            vendas = vendas.filter(cliente=cliente)
+            itens = itens.filter(cliente=cliente)
         if produto:
-            vendas = vendas.filter(produto=produto)
+            itens = itens.filter(produto=produto)
         if forma_pagamento:
-            vendas = vendas.filter(forma_pagamento=forma_pagamento)
+            itens = itens.filter(forma_pagamento=forma_pagamento)
 
         if ordenar_por == 'data_desc':
-            vendas = vendas.order_by('-data')
+            itens = itens.order_by('-data')
         elif ordenar_por == 'data_asc':
-            vendas = vendas.order_by('data')
+            itens = itens.order_by('data')
         elif ordenar_por == 'quantidade_desc':
-            vendas = vendas.order_by('-quantidade')
+            itens = itens.order_by('-quantidade')
         elif ordenar_por == 'quantidade_asc':
-            vendas = vendas.order_by('quantidade')
+            itens = itens.order_by('quantidade')
         elif ordenar_por == 'lucro_desc':
-            vendas = sorted(
-                vendas,
-                key=lambda x: (x.preco_unitario - x.produto.preco_compra) * x.quantidade,
+            itens = sorted(
+                itens,
+                key=lambda x: (x.preco_unitario - x.produto.preco_compra) * x.quantidade - x.desconto,
                 reverse=True
             )
         elif ordenar_por == 'lucro_asc':
-            vendas = sorted(
-                vendas,
-                key=lambda x: (x.preco_unitario - x.produto.preco_compra) * x.quantidade
+            itens = sorted(
+                itens,
+                key=lambda x: (x.preco_unitario - x.produto.preco_compra) * x.quantidade - x.desconto
             )
         else:
-            vendas = vendas.order_by('-id')  
+            itens = itens.order_by('-id')  
     else:
-        vendas = vendas.order_by('-id')
+        itens = itens.order_by('-id')
 
-    paginator = Paginator(vendas, 10)
+    paginator = Paginator(itens, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     relatorio = []
-    for venda in page_obj:
+    for item in page_obj:
+        custo_total = item.produto.preco_compra * item.quantidade
+        receita_total = (item.preco_unitario * item.quantidade) - item.desconto
+        lucro = receita_total - custo_total
+
         relatorio.append({
-            'produto': venda.produto.nome,
-            'data': venda.data,
-            'cliente': venda.cliente,
-            'forma_pagamento': venda.forma_pagamento,
-            'quantidade_vendida': venda.quantidade,
-            'total_receita': venda.preco_unitario * venda.quantidade,
-            'total_custo': venda.produto.preco_compra * venda.quantidade,
-            'lucro': (venda.preco_unitario - venda.produto.preco_compra) * venda.quantidade,
+            'produto': item.produto.nome,
+            'data': item.venda.data,
+            'cliente': item.venda.cliente,
+            'forma_pagamento': item.venda.forma_pagamento,
+            'quantidade_vendida': item.quantidade,
+            'total_receita': receita_total,
+            'total_custo': custo_total,
+            'lucro': lucro,
         })
     
     return render(request, 'financeiro/relatorio_lucros.html', {
