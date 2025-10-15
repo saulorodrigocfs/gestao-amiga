@@ -52,6 +52,11 @@ class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
         fields = ['cliente', 'forma_pagamento', 'parcelas']
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['cliente'].queryset = Cliente.objects.filter(loja__dono=user)
     
 class ItemVendaForm(forms.ModelForm):
     class Meta:

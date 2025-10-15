@@ -251,7 +251,7 @@ def cadastrar_venda(request, loja_id):
 
     if 'adicionar_item' in request.POST:
         item_form = ItemVendaForm(request.POST, user=request.user)
-        venda_form = VendaForm()
+        venda_form = VendaForm(user=request.user)
         
         if item_form.is_valid():
             produto = item_form.cleaned_data['produto']
@@ -273,7 +273,7 @@ def cadastrar_venda(request, loja_id):
 
             return redirect('cadastrar_venda', loja_id=loja_id)
     elif 'finalizar_venda' in request.POST:
-        venda_form = VendaForm(request.POST)
+        venda_form = VendaForm(request.POST, user=request.user)
         item_form = ItemVendaForm(user=request.user)
 
         if venda_form.is_valid() and carrinho:
@@ -299,7 +299,7 @@ def cadastrar_venda(request, loja_id):
             return redirect('lista_vendas', loja_id=loja_id)
     else:
         item_form = ItemVendaForm(user=request.user)
-        venda_form = VendaForm()
+        venda_form = VendaForm(user=request.user)
 
     total_carrinho = sum(float(item['subtotal']) for item in carrinho)
     return render(request, 'financeiro/cadastrar_venda.html', {
@@ -312,41 +312,100 @@ def cadastrar_venda(request, loja_id):
 
 @login_required
 def editar_venda(request, loja_id, pk):
-    venda = get_object_or_404(Venda, pk=pk, loja_id=loja_id)
-    produto_antigo = venda.produto
-    quantidade_antiga = venda.quantidade
+    venda = get_object_or_404(Venda, id=pk, loja_id=loja_id)
 
-    if request.method == "POST":
-        form = VendaForm(request.POST, instance=venda)
-        if form.is_valid():
-            venda = form.save(commit=False)
+    # Inicializa o carrinho com os itens existentes
+    if 'carrinho' not in request.session or not request.session['carrinho']:
+        carrinho = []
+        for item in venda.itens.all():
+            carrinho.append({
+                'produto_id': item.produto.id,
+                'produto_nome': item.produto.nome,
+                'quantidade': item.quantidade,
+                'desconto': float(item.desconto),
+                'preco_unitario': float(item.preco_unitario),
+                'subtotal': float(item.subtotal),
+            })
+        request.session['carrinho'] = carrinho
+    else:
+        carrinho = request.session['carrinho']
+
+    if 'adicionar_item' in request.POST:
+        item_form = ItemVendaForm(request.POST, user=request.user)
+        venda_form = VendaForm(instance=venda, user=request.user)
+        if item_form.is_valid():
+            produto = item_form.cleaned_data['produto']
+            quantidade = item_form.cleaned_data['quantidade']
+            desconto = item_form.cleaned_data['desconto']
+            preco_unitario = float(produto.preco_venda)
+            subtotal = preco_unitario * quantidade - float(desconto)
+
+            carrinho.append({
+                'produto_id': produto.id,
+                'produto_nome': produto.nome,
+                'quantidade': quantidade,
+                'desconto': float(desconto),
+                'preco_unitario': preco_unitario,
+                'subtotal': subtotal,
+            })
+            request.session['carrinho'] = carrinho
+            request.session.modified = True
+            return redirect('editar_venda', loja_id=loja_id, venda_id=venda.id)
+
+    elif 'finalizar_venda' in request.POST:
+        venda_form = VendaForm(request.POST, instance=venda, user=request.user)
+        item_form = ItemVendaForm(user=request.user)
+        if venda_form.is_valid() and carrinho:
+            venda = venda_form.save(commit=False)
             venda.loja_id = loja_id
             venda.save()
 
-            produto_novo = venda.produto 
-            quantidade_nova = venda.quantidade
-            if produto_novo == produto_antigo:
-                delta = quantidade_nova - quantidade_antiga
-                produto_novo.estoque -= delta
-                produto_novo.save()
-            else:
-                produto_antigo.estoque += quantidade_antiga
-                produto_antigo.save()
-                produto_novo.estoque -= quantidade_nova
-                produto_novo.save()
+            for item in venda.itens.all():
+                produto = item.produto
+                produto.estoque += item.quantidade
+                produto.save()
+            venda.itens.all().delete()
+
+            for item in carrinho:
+                produto = Produto.objects.get(id=item['produto_id'])
+                ItemVenda.objects.create(
+                    venda=venda,
+                    produto=produto,
+                    quantidade=item['quantidade'],
+                    desconto=item['desconto'],
+                )
+                produto.estoque -= item['quantidade']
+                produto.save()
+
+            request.session['carrinho'] = []
+            request.session.modified = True
             return redirect('lista_vendas', loja_id=loja_id)
+
     else:
-        form = VendaForm(instance=venda)
-    return render(request, 'financeiro/cadastrar_venda.html', {'loja_id': loja_id, 'form': form})
+        item_form = ItemVendaForm(user=request.user)
+        venda_form = VendaForm(instance=venda, user=request.user)
+
+    total_carrinho = sum(float(item['subtotal']) for item in carrinho)
+    return render(request, 'financeiro/cadastrar_venda.html', {
+        'loja_id': loja_id,
+        'item_form': item_form,
+        'venda_form': venda_form,
+        'carrinho': carrinho,
+        'total_carrinho': total_carrinho,
+    })
 
 @login_required
 def deletar_venda(request, loja_id, pk):
     venda = get_object_or_404(Venda, pk=pk, loja_id=loja_id)
     if request.method == "POST":
-        produto = venda.produto
-        produto.estoque += venda.quantidade
-        produto.save()
+        itens = ItemVenda.objects.filter(venda=venda)
+        for item in itens:
+            produto = item.produto
+            produto.estoque += item.quantidade
+            produto.save()
+        itens.delete()
         venda.delete()
+        
         return redirect('lista_vendas', loja_id=loja_id)
     return render(request, 'financeiro/deletar_venda.html', {'venda': venda, 'loja_id': loja_id})
 
@@ -475,7 +534,7 @@ def relatorio_lucros(request, loja_id):
 @csrf_exempt
 def exportar_relatorio_pdf(request, loja_id):
     loja = request.user.lojas.get(id=loja_id)
-    vendas = Venda.objects.filter(loja=loja)
+    itens = ItemVenda.objects.filter(venda__loja=loja).select_related('venda', 'produto')
 
     # Filtragem
     data_inicio = request.POST.get('data_inicio')
@@ -485,16 +544,16 @@ def exportar_relatorio_pdf(request, loja_id):
     
     if data_inicio:
         data_inicio_obj = datetime.strptime(data_inicio, "%d-%m-%Y").date()
-        vendas = vendas.filter(data_date_gte=data_inicio_obj)
+        itens = itens.filter(data_date_gte=data_inicio_obj)
     if data_fim:
         data_fim_obj = datetime.strptime(data_fim, "%d-%m-%Y").date()
-        vendas = vendas.filter(data_date_lte=data_fim_obj)
+        itens = itens.filter(data_date_lte=data_fim_obj)
     if cliente_id:
         cliente_obj = get_object_or_404(Cliente, id=int(cliente_id))
-        vendas = vendas.filter(cliente=cliente_obj)
+        itens = itens.filter(cliente=cliente_obj)
     if produto_id:
         produto_obj = get_object_or_404(Produto, id=int(produto_id))
-        vendas = vendas.filter(produto=produto_obj)
+        itens = itens.filter(produto=produto_obj)
 
     # Criando PDF em horizontal
     buffer = io.BytesIO()
@@ -526,15 +585,15 @@ def exportar_relatorio_pdf(request, loja_id):
     p.setFont("Helvetica", 10)
 
     # Conteúdo
-    for venda in vendas:
+    for item in itens:
         dados = [
-            (venda.produto.nome, 50, "left"),
-            (venda.data.strftime("%d/%m/%Y"), 200, "left"),
-            (str(venda.cliente), 300, "left"),
-            (str(venda.quantidade), 450, "right"),
-            (f"{venda.preco_unitario * venda.quantidade:.2f}", 500, "right"),
-            (f"{venda.produto.preco_compra * venda.quantidade:.2f}", 570, "right"),
-            (f"{(venda.preco_unitario - venda.produto.preco_compra) * venda.quantidade:.2f}", 640, "right")
+            (item.produto.nome, 50, "left"),
+            (item.venda.data.strftime("%d/%m/%Y"), 200, "left"),
+            (str(item.venda.cliente), 300, "left"),
+            (str(item.quantidade), 450, "right"),
+            (f"{item.preco_unitario * item.quantidade:.2f}", 500, "right"),
+            (f"{item.produto.preco_compra * item.quantidade:.2f}", 570, "right"),
+            (f"{(item.preco_unitario - item.produto.preco_compra) * item.quantidade:.2f}", 640, "right")
         ]
         for valor, x, align in dados:
             if align == "left":

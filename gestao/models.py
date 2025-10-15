@@ -85,7 +85,6 @@ class Venda(models.Model):
         cliente_nome = self.cliente.nome if self.cliente else "Sem cliente"
         return f"Venda {self.id} - {cliente_nome})"
 
-
 class ItemVenda(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE, related_name="itens")
     produto = models.ForeignKey('Produto', on_delete=models.CASCADE, related_name="itens_venda")
