@@ -6,8 +6,8 @@ from reportlab.lib.pagesizes import A4, landscape
 from django.views.decorators.csrf import csrf_exempt
 from urllib.parse import parse_qs
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa, PerfilUsuario
-from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm, FiltroRelatorioForm, UserForm, PerfilUsuarioForm, CustomPasswordChangeForm
+from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa, PerfilUsuario, ItemVenda
+from .forms import LojaForm, ProdutoForm, ClienteForm, FornecedorForm, VendaForm, DespesaForm, FiltroRelatorioForm, UserForm, PerfilUsuarioForm, CustomPasswordChangeForm, ItemVendaForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -227,34 +227,88 @@ def deletar_fornecedor(request, loja_id, pk):
 
 @login_required
 def lista_vendas(request, loja_id):
-    vendas = Venda.objects.filter(loja_id=loja_id).select_related('produto').order_by('-id')
+    vendas = Venda.objects.filter(loja_id=loja_id).prefetch_related('itens').order_by('-id')
 
     paginator = Paginator(vendas, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'financeiro/lista_vendas.html', {'vendas': page_obj, 'loja_id': loja_id, 'page_obj': page_obj} )
+    return render(
+        request, 
+        'financeiro/lista_vendas.html', 
+        {
+            'vendas': page_obj,
+            'loja_id': loja_id, 
+            'page_obj': page_obj
+        } 
+    )
 
 @login_required
 def cadastrar_venda(request, loja_id):
-    if request.method == "POST":
-        form = VendaForm(request.POST, user=request.user)
-        if form.is_valid():
-            venda = form.save(commit=False)
+    if 'carrinho' not in request.session:
+        request.session['carrinho'] = []
+    carrinho = request.session['carrinho']
+
+    if 'adicionar_item' in request.POST:
+        item_form = ItemVendaForm(request.POST, user=request.user)
+        venda_form = VendaForm()
+        
+        if item_form.is_valid():
+            produto = item_form.cleaned_data['produto']
+            quantidade = item_form.cleaned_data['quantidade']
+            desconto = item_form.cleaned_data['desconto']
+            preco_unitario = float(produto.preco_venda)
+            subtotal = preco_unitario * quantidade - float(desconto)
+
+            carrinho.append({
+                'produto_id': produto.id,
+                'produto_nome': produto.nome,
+                'quantidade': quantidade,
+                'desconto': float(desconto),
+                'preco_unitario': preco_unitario,
+                'subtotal': subtotal,
+            })
+            request.session['carrinho'] = carrinho
+            request.session.modified = True
+
+            return redirect('cadastrar_venda', loja_id=loja_id)
+    elif 'finalizar_venda' in request.POST:
+        venda_form = VendaForm(request.POST)
+        item_form = ItemVendaForm(user=request.user)
+
+        if venda_form.is_valid() and carrinho:
+            venda = venda_form.save(commit=False)
             venda.loja_id = loja_id
-            venda.preco_unitario = venda.produto.preco_venda
-            
-            #atualiza estoque produto
-            produto = venda.produto
-            produto.estoque -= venda.quantidade
-            produto.save()
-            if venda.forma_pagamento != 'credito_parcelado':
-                venda.parcelas = 1
             venda.save()
+
+            for item in carrinho:
+                produto = Produto.objects.get(id=item['produto_id'])
+                ItemVenda.objects.create(
+                    venda=venda,
+                    produto=produto,
+                    quantidade=item['quantidade'],
+                    desconto=item['desconto'],
+                )
+
+                produto.estoque -= item['quantidade']
+                produto.save()
+
+            request.session['carrinho'] = []
+            request.session.modified = True
+
             return redirect('lista_vendas', loja_id=loja_id)
     else:
-        form = VendaForm(user=request.user)
-    return render(request, 'financeiro/cadastrar_venda.html', {'loja_id': loja_id, 'form': form})
+        item_form = ItemVendaForm(user=request.user)
+        venda_form = VendaForm()
+
+    total_carrinho = sum(float(item['subtotal']) for item in carrinho)
+    return render(request, 'financeiro/cadastrar_venda.html', {
+        'loja_id': loja_id,
+        'item_form': item_form,
+        'venda_form': venda_form,
+        'carrinho': carrinho,
+        'total_carrinho': total_carrinho,
+        })
 
 @login_required
 def editar_venda(request, loja_id, pk):

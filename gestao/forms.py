@@ -1,5 +1,5 @@
 from django import forms
-from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa, PerfilUsuario
+from .models import Loja, Produto, Cliente, Fornecedor, Venda, Despesa, PerfilUsuario, ItemVenda
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 
@@ -51,9 +51,15 @@ class FornecedorForm(forms.ModelForm):
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
-        fields = ['produto', 'cliente', 'quantidade', 'desconto', 'forma_pagamento', 'parcelas']
+        fields = ['cliente', 'forma_pagamento', 'parcelas']
+    
+class ItemVendaForm(forms.ModelForm):
+    class Meta:
+        model = ItemVenda
+        fields = ['produto', 'quantidade', 'desconto']
         widgets = {
             'quantidade': forms.NumberInput(attrs={'min': 1}),
+            'desconto': forms.NumberInput(attrs={'min': 0, 'step': '0.01'}),
         }
 
     def __init__(self, *args, user=None, **kwargs):
@@ -61,7 +67,6 @@ class VendaForm(forms.ModelForm):
         if user:
             self.fields['produto'].queryset = Produto.objects.filter(loja__dono=user)
             self.fields['produto'].label_from_instance = lambda obj: f"{obj.nome} - {obj.descricao}"
-            self.fields['cliente'].queryset = Cliente.objects.filter(loja__dono=user)
 
 class DespesaForm(forms.ModelForm):
     class Meta:

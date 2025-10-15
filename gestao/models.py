@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from decimal import Decimal
 
 
 
@@ -68,22 +69,42 @@ class Venda(models.Model):
     ]
 
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name="vendas", default=1)
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="vendas_produto")
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="vendas_cliente", blank = True, null = True)
-    quantidade = models.PositiveIntegerField()
-    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=1)
-    valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=1)
-    desconto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     forma_pagamento = models.CharField(max_length=20, choices=FORMAS_PAGAMENTO, default='dinheiro')
     parcelas = models.IntegerField(default=1)
     data = models.DateTimeField(auto_now_add=True)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    def atualizar_valor_total(self):
+        """Atualiza o total somando todos os itens vinculados."""
+        total = sum(item.subtotal for item in self.itens.all())
+        self.valor_total = total
+        self.save()
+    
+    def __str__(self):
+        cliente_nome = self.cliente.nome if self.cliente else "Sem cliente"
+        return f"Venda {self.id} - {cliente_nome})"
+
+
+class ItemVenda(models.Model):
+    venda = models.ForeignKey(Venda, on_delete=models.CASCADE, related_name="itens")
+    produto = models.ForeignKey('Produto', on_delete=models.CASCADE, related_name="itens_venda")
+    quantidade = models.PositiveIntegerField(default=1)
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    desconto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
     def save(self, *args, **kwargs):
-        self.valor_total = self.quantidade * self.preco_unitario - self.desconto
+        self.preco_unitario = self.produto.preco_venda
+        self.subtotal = self.quantidade * self.preco_unitario - Decimal(self.desconto)
         super().save(*args, **kwargs)
 
+        if self.venda_id:
+            self.venda.atualizar_valor_total()
+        
     def __str__(self):
-        return f"{self.produto.nome} - {self.quantidade} unidades"
+        return f"{self.produto.nome} ({self.quantidade}x)"
+
 
 class Despesa(models.Model):
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE)

@@ -8,33 +8,36 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th style="text-align: left;">Produtos</th>
-            <th>Descrição</th>
-            <th>Quantidade</th>
-            <th>Forma de Pagamento</th>
+            <th style="text-align: left;">ID</th>
             <th>Cliente</th>
-            <th>Preço Unitário</th>
-            <th>Desconto</th>
-            <th>Valor Total</th>
             <th>Data</th>
+            <th>Total</th>
+            <th>Itens</th>
             <th>Ações</th>
         </tr>
     </thead>
     <tbody>
         {% for venda in page_obj %}
         <tr>
-            <td style="text-align: left;">{{ venda.produto.nome }}</td>
-            <td>{{ venda.produto.descricao }}</td>
-            <td>{{ venda.quantidade }}</td>
-            <td>{{ venda.forma_pagamento }}</td>
+            <td style="text-align: left;">{{ venda.id }}</td>
             <td>{{ venda.cliente }}</td>
-            <td>{{ venda.preco_unitario }}</td>
-            <td>{{ venda.desconto }}</td>
-            <td>{{ venda.valor_total }}</td>
             <td>{{ venda.data|date:"d/m/Y" }}</td>
+            <td>R$ {{ venda.valor_total }}</td>
+            <td>
+                <button class="toggle-itens" data-id="{{ venda.id }}">+</button>
+            </td>
             <td>
                 <a href="{% url 'editar_venda' loja_id venda.id %}" class="btn btn-warning btn-sm">Editar</a>
                 <a href="{% url 'deletar_venda' loja_id venda.id %}" class="btn btn-danger btn-sm">Deletar</a>
+            </td>
+        </tr>
+        <tr class="itens-venda" id="itens-{{ venda.id }}" style="display: none;">
+            <td colspan="5">
+                <ul>
+                    {% for item in venda.itens.all %}
+                        <li>{{ item.produto.nome }} - Qtd: {{ item.quantidade }} - R$ {{ item.subtotal }}</li>
+                    {% endfor %}
+                </ul>
             </td>
         </tr>
         {% endfor %}
@@ -55,5 +58,22 @@
         <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
     {% endif %}
 </div>
+
+<script>
+  const buttons = document.querySelectorAll('.toggle-itens');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const row = document.getElementById('itens-' + id);
+      if (row.style.display === 'none') {
+        row.style.display = 'table-row';
+        btn.textContent = "-";
+      } else {
+        row.style.display = 'none';
+        btn.textContent = "+";
+      }
+    });
+  });
+</script>
 
 {% endblock%}
