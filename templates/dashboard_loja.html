@@ -1,49 +1,67 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container" style="margin-top: 30px;">
-    <h2 style="color: var(--cor-primaria); margin-bottom: 20px;">Dashboard de {{ loja.nome }}</h2>
-    <p>Bem-vindo ao painel da sua loja, {{ user.first_name }}!</p>
+    <h2 class="mb-4" style="color: var(--cor-primaria); font-weight: 700;">Dashboard de {{ loja.nome }}</h2>
+    <p class="mb-5">Bem-vindo ao painel da sua loja, <strong>{{ user.first_name }}</strong>!</p>
 
-    <div class="row">
-        <!--Resumo financeiro-->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100" style="padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
-                <h5 style="color: var(--cor-primaria);">Resumo financeiro</h3>
-                <p>Saldo atual do caixa: <strong>R$ {{ saldo_atual | floatformat:2 }}</strong></p>
-                <p>Total de receitas: <strong>R$ {{ total_receitas | floatformat:2 }}</strong></p>
-                <p>Total de despesas: <strong>R$ {{ total_despesas | floatformat:2 }}</strong></p>
+    <div class="row g-4">
+        <!-- Resumo Financeiro -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background: #f8f9fa;">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase" style="color: var(--cor-primaria); font-weight: 600;">Resumo Financeiro</h5>
+                    <hr>
+                    <p class="mb-2">Saldo atual do caixa:</p>
+                    <h3 class="mb-3" style="color: #28a745;">R$ {{ saldo_atual | floatformat:2 }}</h3>
+                    <p>Total de receitas: <strong>R$ {{ total_receitas | floatformat:2 }}</strong></p>
+                    <p>Total de despesas: <strong style="color: #dc3545;">R$ {{ total_despesas | floatformat:2 }}</strong></p>
+                </div>
             </div>
         </div>
 
-    <!--Últimas vendas-->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100" style="padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
-                <h5 style="color: var(--cor-primaria);">Últimas vendas</h3>
-                <ul class="list-unstyled">
-                    {% for venda in ultimas_vendas %}
-                        <li>{{ venda.cliente.nome }} - R$ {{ venda.valor_total | floatformat:2 }}</li>
-                    {% empty %}
-                        <li>Nenhuma venda registrada</li>
-                    {% endfor %}
-                </ul>
+        <!-- Últimas Vendas -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background: #fff3cd;">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase" style="color: #856404; font-weight: 600;">Últimas Vendas</h5>
+                    <hr>
+                    <ul class="list-unstyled mb-0">
+                        {% for venda in ultimas_vendas %}
+                            <li class="mb-2">
+                                <i class="bi bi-cart-check-fill me-2" style="color: #856404;"></i>
+                                {{ venda.cliente.nome }} - <strong>R$ {{ venda.valor_total | floatformat:2 }}</strong>
+                            </li>
+                        {% empty %}
+                            <li>Nenhuma venda registrada</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4 mb-4">
-            <div class="card h-100" style="padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
-                <h5 style="color: var(--cor-primaria);">Despesas recentes</h3>
-                <ul class="list-unstyled">
-                    {% for despesa in despesas_recentes %}
-                        <li>{{ despesa.descricao }} - R$ {{ despesa.valor | floatformat:2 }}</li>
-                    {% empty %}
-                        <li>Nenhuma despesa registrada</li>
-                    {% endfor %}
-                </ul>
+        <!-- Despesas Recentes -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background: #f8d7da;">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase" style="color: #721c24; font-weight: 600;">Despesas Recentes</h5>
+                    <hr>
+                    <ul class="list-unstyled mb-0">
+                        {% for despesa in despesas_recentes %}
+                            <li class="mb-2">
+                                <i class="bi bi-cash-stack me-2" style="color: #721c24;"></i>
+                                {{ despesa.descricao }} - <strong>R$ {{ despesa.valor | floatformat:2 }}</strong>
+                            </li>
+                        {% empty %}
+                            <li>Nenhuma despesa registrada</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>  
     </div>
 
-    <a href="{% url 'painel_loja' %}" class="btn btn-secondary mt-3">Voltar para Painel de Lojas</a> 
+    <div class="mt-5">
+        <a href="{% url 'painel_loja' %}" class="btn btn-outline-secondary btn-lg">Voltar para Painel de Lojas</a>
+    </div>
 </div>
-
 {% endblock %}
