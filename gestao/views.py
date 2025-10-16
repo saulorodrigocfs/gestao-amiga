@@ -69,15 +69,20 @@ def dashboard_loja(request, loja_id):
         loja = user.lojas.get(id=loja_id)
     except Loja.DoesNotExist:
         return redirect('painel_loja')
-    #Total de receitas
+    
     total_receitas = loja.vendas.aggregate(total=Sum('valor_total'))['total'] or 0
-    #Total despesas
     total_despesas = Despesa.objects.filter(loja=loja).aggregate(total=Sum('valor'))['total'] or 0
-    #Saldo Atual
     saldo_atual = total_receitas - total_despesas
-    #Últimas vendas (3 mais recentes)
-    ultimas_vendas = loja.vendas.order_by('-data')[:3]
-    #Despesas recentes (3 mais recentes)
+    vendas = loja.vendas.order_by('-data')
+    clientes_vistos = set()
+    ultimas_vendas = []
+    for venda in vendas:
+        if venda.cliente and venda.cliente.id not in clientes_vistos:
+            ultimas_vendas.append(venda)
+            clientes_vistos.add(venda.cliente.id)
+        if len(ultimas_vendas) == 3:
+            break
+
     despesas_recentes = Despesa.objects.filter(loja=loja).order_by('data')[:3]
 
     contexto = {
@@ -514,6 +519,7 @@ def relatorio_lucros(request, loja_id):
 
         relatorio.append({
             'produto': item.produto.nome,
+            'descricao': item.produto.descricao,
             'data': item.venda.data,
             'cliente': item.venda.cliente,
             'forma_pagamento': item.venda.forma_pagamento,

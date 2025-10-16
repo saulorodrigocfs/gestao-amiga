@@ -14,6 +14,7 @@
 
     {% if carrinho %}
         <h5 style="margin-bottom: 10px;">Itens adicionados</h5>
+        <div class="table-responsive mt-3">
         <table class="table table-striped" style="width: 100%;">
             <thead>
                 <tr>
@@ -40,6 +41,7 @@
                 </tr>
             </tbody>
         </table>
+        </div>
     {% else %}
         <p style="color: gray;">Nenhum item adicionado ainda.</p>
     {% endif %}

@@ -33,11 +33,18 @@
         </tr>
         <tr class="itens-venda" id="itens-{{ venda.id }}" style="display: none;">
             <td colspan="5">
-                <ul>
+                <div class="itens-container">
                     {% for item in venda.itens.all %}
-                        <li>{{ item.produto.nome }} - Qtd: {{ item.quantidade }} - R$ {{ item.subtotal }}</li>
+                    <div class="item-row">
+                        <div class="item-nome">
+                            {{ item.produto.nome }}<br>
+                            <small class="item-descricao">{{ item.produto.descricao }}</small>
+                        </div>
+                        <span class="item-quantidade">Qtd: {{ item.quantidade }}</span>
+                        <span class="item-subtotal">R$ {{ item.subtotal }}</span>
+                    </div>
                     {% endfor %}
-                </ul>
+                </div>
             </td>
         </tr>
         {% endfor %}

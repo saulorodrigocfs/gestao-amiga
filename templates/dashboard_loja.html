@@ -21,7 +21,7 @@
                 <h5 style="color: var(--cor-primaria);">Últimas vendas</h3>
                 <ul class="list-unstyled">
                     {% for venda in ultimas_vendas %}
-                        <li>{{ venda.produto.nome }} - {{ venda.quantidade }} un. - R$ {{ venda.valor_total | floatformat:2 }}</li>
+                        <li>{{ venda.cliente.nome }} - R$ {{ venda.valor_total | floatformat:2 }}</li>
                     {% empty %}
                         <li>Nenhuma venda registrada</li>
                     {% endfor %}
