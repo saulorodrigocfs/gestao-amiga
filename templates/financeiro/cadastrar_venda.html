@@ -15,32 +15,51 @@
     {% if carrinho %}
         <h5 style="margin-bottom: 10px;">Itens adicionados</h5>
         <div class="table-responsive mt-3">
-        <table class="table table-striped" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th>Produtos</th>
-                    <th>Quantidade</th>
-                    <th>Desconto</th>
-                    <th>Preço Unitário</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in carrinho %}
-                <tr>
-                    <td>{{ item.produto_nome }}</td>
-                    <td>{{ item.quantidade }}</td>
-                    <td>R$ {{ item.desconto|floatformat:2 }}</td>
-                    <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
-                    <td>R$ {{ item.subtotal|floatformat:2 }}</td>
-                </tr>
-                {% endfor %}
-                <tr style="font-weight: bold;">
-                    <td colspan="4" style="text-align: right;">Total</td>
-                    <td>R$ {{ total_carrinho|floatformat:2 }}</td>
-                </tr>
-            </tbody>
-        </table>
+            <table class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Produtos</th>
+                        <th>Quantidade</th>
+                        <th>Desconto</th>
+                        <th>Preço Unitário</th>
+                        <th>Subtotal</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in carrinho %}
+                    <tr>
+                        <td>{{ item.produto_nome }} {{ item.produto.descricao }}</td>
+
+                        <td>
+                            <form method="post" style="display: flex; gap: 5px; align-items: center;">
+                                {% csrf_token %}
+                                <input type="hidden" name="produto_id" value="{{ item.produto_id }}">
+                                <input type="number" name="nova_quantidade" value="{{ item.quantidade }}" min="1" style="width: 60px;">
+                                <button type="submit" name="editar_item" class="btn btn-sm btn-primary">Atualizar</button>
+                            </form>
+                        </td>
+
+                        <td>R$ {{ item.desconto|floatformat:2 }}</td>
+                        <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                        <td>R$ {{ item.subtotal|floatformat:2 }}</td>
+
+                        <td>
+                            <form method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="produto_id" value="{{ item.produto_id }}">
+                                <button type="submit" name="remover_item" class="btn btn-sm btn-danger">Remover</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr style="font-weight: bold;">
+                        <td colspan="4" style="text-align: right;">Total</td>
+                        <td>R$ {{ total_carrinho|floatformat:2 }}</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     {% else %}
         <p style="color: gray;">Nenhum item adicionado ainda.</p>
@@ -58,10 +77,11 @@
         </div>
     </form>
 </div>
+
+
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
     $(document).ready(function() {
         $('#id_produto').select2({
@@ -69,12 +89,11 @@
             allowClear: true,
             width: '100%'
         });
-            $('#id_cliente').select2({
+        $('#id_cliente').select2({
             placeholder: 'Digite para buscar um cliente',
             allowClear: true,
             width: '100%'
-        })
+        });
     });
 </script>
-
 {% endblock %}

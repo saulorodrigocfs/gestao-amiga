@@ -180,6 +180,11 @@ form .text-danger {
     text-align: right;
 }
 
+td form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 @media (max-width: 768px) {
 

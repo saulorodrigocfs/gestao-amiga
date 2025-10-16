@@ -24,7 +24,7 @@
             <td>{{ venda.data|date:"d/m/Y" }}</td>
             <td>R$ {{ venda.valor_total }}</td>
             <td>
-                <button class="toggle-itens" data-id="{{ venda.id }}">+</button>
+                <button class="toggle-itens" data-id="{{ venda.id }}">▼</button>
             </td>
             <td>
                 <a href="{% url 'editar_venda' loja_id venda.id %}" class="btn btn-warning btn-sm">Editar</a>
@@ -74,10 +74,10 @@
       const row = document.getElementById('itens-' + id);
       if (row.style.display === 'none') {
         row.style.display = 'table-row';
-        btn.textContent = "-";
+        btn.textContent = "▲";
       } else {
         row.style.display = 'none';
-        btn.textContent = "+";
+        btn.textContent = "▼";
       }
     });
   });

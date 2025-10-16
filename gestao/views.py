@@ -250,9 +250,27 @@ def lista_vendas(request, loja_id):
 
 @login_required
 def cadastrar_venda(request, loja_id):
-    if 'carrinho' not in request.session:
-        request.session['carrinho'] = []
-    carrinho = request.session['carrinho']
+    if 'carrinho_cadastro' not in request.session:
+        request.session['carrinho_cadastro'] = []
+    carrinho = request.session['carrinho_cadastro']
+
+    if 'remover_item' in request.POST:
+        produto_id = int(request.POST.get('produto_id'))
+        carrinho = [item for item in carrinho if item['produto_id'] != produto_id]
+        request.session['carrinho_cadastro'] = carrinho
+        request.session.modified = True
+        return redirect('cadastrar_venda', loja_id=loja_id)
+    
+    if 'editar_item' in request.POST:
+        produto_id = int(request.POST.get('produto_id'))
+        nova_qtd = int(request.POST.get('nova_quantidade'))
+        for item in carrinho:
+            if item['produto_id'] == produto_id:
+                item['quantidade'] = nova_qtd
+                item['subtotal'] = (item['preco_unitario'] * nova_qtd) - float(item['desconto'])
+        request.session['carrinho_cadastro'] = carrinho
+        request.session.modified = True
+        return redirect('cadastrar_venda', loja_id=loja_id)
 
     if 'adicionar_item' in request.POST:
         item_form = ItemVendaForm(request.POST, user=request.user)
@@ -273,10 +291,10 @@ def cadastrar_venda(request, loja_id):
                 'preco_unitario': preco_unitario,
                 'subtotal': subtotal,
             })
-            request.session['carrinho'] = carrinho
+            request.session['carrinho_cadastro'] = carrinho
             request.session.modified = True
-
             return redirect('cadastrar_venda', loja_id=loja_id)
+        
     elif 'finalizar_venda' in request.POST:
         venda_form = VendaForm(request.POST, user=request.user)
         item_form = ItemVendaForm(user=request.user)
@@ -298,7 +316,7 @@ def cadastrar_venda(request, loja_id):
                 produto.estoque -= item['quantidade']
                 produto.save()
 
-            request.session['carrinho'] = []
+            request.session['carrinho_cadastro'] = []
             request.session.modified = True
 
             return redirect('lista_vendas', loja_id=loja_id)
@@ -319,21 +337,38 @@ def cadastrar_venda(request, loja_id):
 def editar_venda(request, loja_id, pk):
     venda = get_object_or_404(Venda, id=pk, loja_id=loja_id)
 
-    # Inicializa o carrinho com os itens existentes
-    if 'carrinho' not in request.session or not request.session['carrinho']:
-        carrinho = []
-        for item in venda.itens.all():
-            carrinho.append({
+    sess_key = f'carrinho_edicao_{venda.id}'
+    if sess_key not in request.session:
+        request.session[sess_key] = [
+            {
                 'produto_id': item.produto.id,
                 'produto_nome': item.produto.nome,
                 'quantidade': item.quantidade,
                 'desconto': float(item.desconto),
                 'preco_unitario': float(item.preco_unitario),
                 'subtotal': float(item.subtotal),
-            })
-        request.session['carrinho'] = carrinho
-    else:
-        carrinho = request.session['carrinho']
+            } for item in venda.itens.all()
+        ]
+    carrinho = request.session[sess_key]    
+
+    if 'remover_item' in request.POST:
+        produto_id = int(request.POST.get('produto_id'))
+        carrinho = [item for item in carrinho if item['produto_id'] != produto_id]
+        request.session[sess_key] = carrinho
+        request.session.modified = True
+        return redirect('editar_venda', loja_id=loja_id, pk=venda.id)
+    
+    if 'editar_item' in request.POST:
+        produto_id = int(request.POST.get('produto_id'))
+        nova_qtd = int(request.POST.get('nova_quantidade'))
+        for item in carrinho:
+            if item['produto_id'] == produto_id:
+                item['quantidade'] = nova_qtd
+                item['subtotal'] = (item['preco_unitario'] * nova_qtd) - float(item['desconto'])
+        request.session[sess_key] = carrinho
+        request.session.modified = True
+        return redirect('editar_venda', loja_id=loja_id, pk=venda.id)
+
 
     if 'adicionar_item' in request.POST:
         item_form = ItemVendaForm(request.POST, user=request.user)
@@ -353,9 +388,9 @@ def editar_venda(request, loja_id, pk):
                 'preco_unitario': preco_unitario,
                 'subtotal': subtotal,
             })
-            request.session['carrinho'] = carrinho
+            request.session[sess_key] = carrinho
             request.session.modified = True
-            return redirect('editar_venda', loja_id=loja_id, venda_id=venda.id)
+            return redirect('editar_venda', loja_id=loja_id, pk=venda.id)
 
     elif 'finalizar_venda' in request.POST:
         venda_form = VendaForm(request.POST, instance=venda, user=request.user)
@@ -382,7 +417,7 @@ def editar_venda(request, loja_id, pk):
                 produto.estoque -= item['quantidade']
                 produto.save()
 
-            request.session['carrinho'] = []
+            del request.session[sess_key]
             request.session.modified = True
             return redirect('lista_vendas', loja_id=loja_id)
 
