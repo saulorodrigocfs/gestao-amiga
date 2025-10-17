@@ -508,15 +508,15 @@ def relatorio_lucros(request, loja_id):
         ordenar_por = form.cleaned_data.get('ordenar_por')
 
         if data_inicio:
-            itens = itens.filter(data__gte=data_inicio)
+            itens = itens.filter(venda__data__gte=data_inicio)
         if data_fim:
-            itens = itens.filter(data__lte=data_fim)
+            itens = itens.filter(venda__data__lte=data_fim)
         if cliente:
-            itens = itens.filter(cliente=cliente)
+            itens = itens.filter(venda__cliente=cliente)
         if produto:
             itens = itens.filter(produto=produto)
         if forma_pagamento:
-            itens = itens.filter(forma_pagamento=forma_pagamento)
+            itens = itens.filter(venda__forma_pagamento=forma_pagamento)
 
         if ordenar_por == 'data_desc':
             itens = itens.order_by('-data')
@@ -572,7 +572,6 @@ def relatorio_lucros(request, loja_id):
     })
 
 @login_required
-@csrf_exempt
 def exportar_relatorio_pdf(request, loja_id):
     loja = request.user.lojas.get(id=loja_id)
     itens = ItemVenda.objects.filter(venda__loja=loja).select_related('venda', 'produto')
@@ -584,14 +583,14 @@ def exportar_relatorio_pdf(request, loja_id):
     produto_id = request.POST.get('produto')
     
     if data_inicio:
-        data_inicio_obj = datetime.strptime(data_inicio, "%d-%m-%Y").date()
-        itens = itens.filter(data_date_gte=data_inicio_obj)
+        data_inicio_obj = datetime.strptime(data_inicio, "%Y-%m-%d").date()
+        itens = itens.filter(venda__data__gte=data_inicio_obj)
     if data_fim:
-        data_fim_obj = datetime.strptime(data_fim, "%d-%m-%Y").date()
-        itens = itens.filter(data_date_lte=data_fim_obj)
+        data_fim_obj = datetime.strptime(data_fim, "%Y-%m-%d").date()
+        itens = itens.filter(venda__data__lte=data_fim_obj)
     if cliente_id:
         cliente_obj = get_object_or_404(Cliente, id=int(cliente_id))
-        itens = itens.filter(cliente=cliente_obj)
+        itens = itens.filter(venda__cliente=cliente_obj)
     if produto_id:
         produto_obj = get_object_or_404(Produto, id=int(produto_id))
         itens = itens.filter(produto=produto_obj)

@@ -21,42 +21,46 @@
 
         <!-- Últimas Vendas -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background: #fff3cd;">
-                <div class="card-body">
-                    <h5 class="card-title text-uppercase" style="color: #856404; font-weight: 600;">Últimas Vendas</h5>
-                    <hr>
-                    <ul class="list-unstyled mb-0">
-                        {% for venda in ultimas_vendas %}
-                            <li class="mb-2">
-                                <i class="bi bi-cart-check-fill me-2" style="color: #856404;"></i>
-                                {{ venda.cliente.nome }} - <strong>R$ {{ venda.valor_total | floatformat:2 }}</strong>
-                            </li>
-                        {% empty %}
-                            <li>Nenhuma venda registrada</li>
-                        {% endfor %}
-                    </ul>
+            <a href="{% url 'lista_vendas' loja.id %}" class="card-link">
+                <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background: #fff3cd;">
+                    <div class="card-body">
+                        <h5 class="card-title text-uppercase" style="color: #856404; font-weight: 600;">Últimas Vendas</h5>
+                        <hr>
+                        <ul class="list-unstyled mb-0">
+                            {% for venda in ultimas_vendas %}
+                                <li class="mb-2">
+                                    <i class="bi bi-cart-check-fill me-2" style="color: #856404;"></i>
+                                    {{ venda.cliente.nome }} - <strong>R$ {{ venda.valor_total | floatformat:2 }}</strong>
+                                </li>
+                            {% empty %}
+                                <li>Nenhuma venda registrada</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Despesas Recentes -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background: #f8d7da;">
-                <div class="card-body">
-                    <h5 class="card-title text-uppercase" style="color: #721c24; font-weight: 600;">Despesas Recentes</h5>
-                    <hr>
-                    <ul class="list-unstyled mb-0">
-                        {% for despesa in despesas_recentes %}
-                            <li class="mb-2">
-                                <i class="bi bi-cash-stack me-2" style="color: #721c24;"></i>
-                                {{ despesa.descricao }} - <strong>R$ {{ despesa.valor | floatformat:2 }}</strong>
-                            </li>
-                        {% empty %}
-                            <li>Nenhuma despesa registrada</li>
-                        {% endfor %}
-                    </ul>
+            <a href="{% url 'lista_despesas' loja.id %}" class="card-link">
+                <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background: #f8d7da;">
+                    <div class="card-body">
+                        <h5 class="card-title text-uppercase" style="color: #721c24; font-weight: 600;">Despesas Recentes</h5>
+                        <hr>
+                        <ul class="list-unstyled mb-0">
+                            {% for despesa in despesas_recentes %}
+                                <li class="mb-2">
+                                    <i class="bi bi-cash-stack me-2" style="color: #721c24;"></i>
+                                    {{ despesa.descricao }} - <strong>R$ {{ despesa.valor | floatformat:2 }}</strong>
+                                </li>
+                            {% empty %}
+                                <li>Nenhuma despesa registrada</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>  
     </div>
 

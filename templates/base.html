@@ -37,6 +37,8 @@
         {% if mostrar_sidebar %}
         <button class="menu-toggle btn btn-success d-md-none mb-2">☰ Menu</button>
 
+        <div class="sidebar-overlay"></div>
+
         <nav class="col-md-2 d-md-block sidebar bg-light" style="min-height:100vh; border-right:1px solid #e0e0e0;">
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
@@ -74,10 +76,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.querySelector('.menu-toggle');
     const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
 
-    if (toggleBtn && sidebar) {
+    if (toggleBtn && sidebar && overlay) {
         toggleBtn.addEventListener('click', () => {
             sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
         });
     }
 });
