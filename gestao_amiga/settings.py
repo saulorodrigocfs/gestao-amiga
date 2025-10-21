@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2q3c7@%o88%4_bu%pvvbwt0p58i77bem__&799#^ba8qvkcg&o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['saulorodrigocfs.mysql.pythonanywhere-services.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,6 +79,15 @@ WSGI_APPLICATION = 'gestao_amiga.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+#Quando for fazer o git push para atualizar o Python Anywhere
+"""
+DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': 'saulorodrigocfs.mysql.pythonanywhere-services.com',
         'NAME': 'saulorodrigocfs$gestaoamiga',
@@ -87,6 +96,7 @@ DATABASES = {
         'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
+"""
 
 
 # Password validation
@@ -126,6 +136,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+#Quando for fazer o git push para atualizar o Python Anywhere
+"""
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/nome_usuario/gestao-amiga/static'
+"""
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

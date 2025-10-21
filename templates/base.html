@@ -2,12 +2,34 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão Amiga</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilo do projeto -->
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Favicon para navegadores -->
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    
+    <!-- Apple Touch Icon (iPhones/iPads) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+
+    <!-- Favicon maior para navegadores/favoritos -->
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'img/favicon-96x96.png' %}">
+
+    <!-- Manifest para Android/Chrome -->
+    <link rel="manifest" href="{% static 'img/site.webmanifest' %}">
+
+    <!-- Cor do tema para navegadores -->
+    <meta name="theme-color" content="#ffffff">
 </head>
 <body>
 
