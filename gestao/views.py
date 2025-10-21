@@ -77,9 +77,10 @@ def dashboard_loja(request, loja_id):
     clientes_vistos = set()
     ultimas_vendas = []
     for venda in vendas:
-        if venda.cliente and venda.cliente.id not in clientes_vistos:
+        if not venda.cliente or venda.cliente.id not in clientes_vistos:
             ultimas_vendas.append(venda)
-            clientes_vistos.add(venda.cliente.id)
+            if venda.cliente:
+                clientes_vistos.add(venda.cliente.id)
         if len(ultimas_vendas) == 3:
             break
 

@@ -30,7 +30,12 @@
                             {% for venda in ultimas_vendas %}
                                 <li class="mb-2">
                                     <i class="bi bi-cart-check-fill me-2" style="color: #856404;"></i>
-                                    {{ venda.cliente.nome }} - <strong>R$ {{ venda.valor_total | floatformat:2 }}</strong>
+                                    {% if venda.cliente and venda.cliente.nome %}
+                                        {{ venda.cliente.nome }}
+                                    {% else %}
+                                        Sem cliente
+                                    {% endif %}
+                                    - <strong>R$ {{ venda.valor_total | floatformat:2 }}</strong>
                                 </li>
                             {% empty %}
                                 <li>Nenhuma venda registrada</li>
